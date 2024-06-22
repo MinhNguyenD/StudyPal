@@ -1,9 +1,23 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import "../../style.css"
-import Mail from "../icons/Mail.vue"
-import Facebook from "../icons/social/Facebook.vue"
-import Instagram from "../icons/social/Instagram.vue"
-import Twitter from "../icons/social/Twitter.vue"
+
+const emailValidate = /^[a-zA-Z0-9_]+(-|.)*[a-zA-Z0-9_]*@[a-zA-Z0-9_]+(-|.)*[a-zA-Z0-9_]*\.[a-zA-Z0-9_]+(-|.)*[a-zA-Z0-9_]*$/;
+
+const name = defineModel<string>("name");
+const email = defineModel<string>("email");
+const message = defineModel<string>("message");
+
+const errors = ref<{ name: boolean, email: boolean, message: boolean }>({ name: false, email: false, message: false })
+
+console.log(name.value);
+
+function submit() {
+    errors.value.email = !emailValidate.test(email.value || "");
+    errors.value.message = (message.value?.trim().length || 0) < 3;
+    errors.value.name = (name.value?.trim().length || 0) < 2;
+    console.log(errors.value);
+}
 </script>
 
 <template>
@@ -11,30 +25,33 @@ import Twitter from "../icons/social/Twitter.vue"
         <div class="flex space flex-row justify-between w-10/12 m-auto items-center">
             <div class="w-6/12">
                 <h1 class="font-medium mb-8">Let's Get in Touch!</h1>
-                <h5 class="font-semibold mb-8">We'd love to hear from you! Drop us a message and we'll get back to you
+                <h5 class="font-semibold mb-6">We'd love to hear from you! Drop us a message and we'll get back to you
                     soon!</h5>
-                <p class="font-semibold"><span><Mail class="inline"/></span>example@gmail.com</p>
+                <p class="font-semibold mb-2"><span><img style="pointer-events: none;" src="/Mail.svg"
+                            class="inline" /></span>example@gmail.com</p>
                 <div class="flex flex-row gap-3">
-                    <Facebook />
-                    <Instagram />
-                    <Twitter />
+                    <img style="pointer-events: none;" src="/Facebook.svg" />
+                    <img style="pointer-events: none;" src="/Instagram.svg" />
+                    <img style="pointer-events: none;" src="/Twitter.svg" />
                 </div>
             </div>
 
             <form class="flex flex-col bg-accent p-10 gap-4 rounded-2xl w-6/12 shadow-[0.75em_0.75em_lightgray]">
                 <div>
                     <label class="font-semibold block" for="name">Name</label>
-                    <input class="rounded-xl border-none w-full" type="text" name="name" id="name">
+                    <input v-bind:class="errors.name ? 'border-error' : 'border-none'" class="rounded-xl w-full" type="text" name="name" id="name" v-model="name">
                 </div>
                 <div>
                     <label class="font-semibold block" for="email">Email</label>
-                    <input class="rounded-xl border-none w-full" type="text" name="email" id="email">
+                    <input v-bind:class="errors.email ? 'border-error' : 'border-none'" class="rounded-xl w-full" type="text" name="email" id="email" v-model="email">
                 </div>
                 <div>
                     <label class="font-semibold block" for="message">Message</label>
-                    <textarea class="rounded-xl border-none w-full" name="message" rows="8"></textarea>
+                    <textarea v-bind:class="errors.message ? 'border-error' : 'border-none'" class="rounded-xl w-full" name="message" rows="8"
+                        v-model="message"></textarea>
                 </div>
-                <button class="text-white rounded-full bg-primary py-2 w-1/3" type="submit">Send Message</button>
+                <button class="text-white rounded-full bg-primary py-2 w-1/3" type="submit" @click.prevent="submit">Send
+                    Message</button>
             </form>
         </div>
     </div>

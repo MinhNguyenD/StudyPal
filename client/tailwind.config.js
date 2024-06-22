@@ -12,7 +12,9 @@ export default {
     extend: {
       colors: {
         "primary": "#007BFF",
-        "accent": "#F2F0F0"
+        "accent": "#F2F0F0",
+        "error": "#dc2626",
+        "success": "#22c55e"
       }
     },
   },
