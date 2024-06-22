@@ -10,13 +10,12 @@ const message = defineModel<string>("message");
 
 const errors = ref<{ name: boolean, email: boolean, message: boolean }>({ name: false, email: false, message: false })
 
-console.log(name.value);
-
 function submit() {
     errors.value.email = !emailValidate.test(email.value || "");
     errors.value.message = (message.value?.trim().length || 0) < 3;
     errors.value.name = (name.value?.trim().length || 0) < 2;
-    console.log(errors.value);
+
+    // TODO: send request
 }
 </script>
 
