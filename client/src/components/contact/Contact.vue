@@ -24,9 +24,9 @@ function submit() {
         <div class="flex space flex-row justify-between w-10/12 m-auto items-center">
             <div class="w-6/12">
                 <h1 class="font-medium mb-8">Let's Get in Touch!</h1>
-                <h5 class="font-semibold mb-6">We'd love to hear from you! Drop us a message and we'll get back to you
-                    soon!</h5>
-                <p class="font-semibold mb-2"><span><img style="pointer-events: none;" src="/Mail.svg"
+                <h4 class="font-semibold mb-6">We'd love to hear from you! Drop us a <br/>message and we'll get back to you 
+                    soon!</h4>
+                <p class="font-semibold mb-2"><span class="mr-2"><img style="pointer-events: none;" src="/Mail.svg"
                             class="inline" /></span>example@gmail.com</p>
                 <div class="flex flex-row gap-3">
                     <img style="pointer-events: none;" src="/Facebook.svg" />
