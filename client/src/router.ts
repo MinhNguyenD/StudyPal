@@ -1,8 +1,9 @@
 import { createMemoryHistory, createRouter } from 'vue-router'
 import Contact from './components/contact/Contact.vue'
+import Homepage from './components/Homepage.vue'
 
 const routes = [
-    // { path: '/', component: Home },
+    { path: '/', component: Homepage },
     // { path: '/faq', component: FAQ },
     // { path: '/login', component: Login },
     // { path: '/register', component: Register },

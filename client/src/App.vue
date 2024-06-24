@@ -6,4 +6,5 @@ import NavBar from './components/NavBar.vue';
 <template>
   <NavBar/>
   <router-view/>
-  <h1>TODO: make a separate home component</h1>
+  <h1>Don't render here</h1>
+</template>
