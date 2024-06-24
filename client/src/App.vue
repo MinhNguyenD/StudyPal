@@ -6,5 +6,5 @@ import NavBar from './components/NavBar.vue';
 <template>
   <NavBar/>
   <router-view/>
-  <h1>Don't render here</h1>
+  <h1>TODO: make a footer</h1>
 </template>
