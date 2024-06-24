@@ -22,4 +22,5 @@ export default {
     typography,
     forms,
     aspectRatio,
-  ],
+  ]
+}
