@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using server.Models;
 
 namespace server.Services;
 
@@ -19,7 +20,7 @@ public class JWTTokenService
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new Claim(JwtRegisteredClaimNames.Email, user.Email)
@@ -29,7 +30,7 @@ public class JWTTokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddHours(3),
+            Expires = DateTime.Now.AddDays(3),
             SigningCredentials = signingCred,
             Issuer = _config["JWT:Issuer"],
             Audience = _config["JWT:Audience"]

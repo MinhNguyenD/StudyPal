@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(builder.Configuration["MongoDB:AtlasURI"]));
 builder.Services.AddScoped<JWTTokenService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddAuthentication(options =>
 {
