@@ -1,6 +1,10 @@
+using AspNetCore.Identity.MongoDbCore.Extensions;
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using server.Models;
 using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +20,30 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(builder.Configuration["MongoDB:AtlasURI"]));
+//add mongoIdentityConfiguration...
+var mongoDbIdentityConfig = new MongoDbIdentityConfiguration
+{
+    MongoDbSettings = new MongoDbSettings
+    {
+        ConnectionString = builder.Configuration["MongoDB:AtlasURI"],
+        DatabaseName = builder.Configuration["MongoDB:DatabaseName"]
+    },
+    IdentityOptionsAction = options =>
+    {
+        // TODO: Change based on password requirement
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 1;
+        options.Password.RequireLowercase = false;
+        options.Password.RequiredUniqueChars = 0;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+    }
+};
+
+builder.Services.ConfigureMongoDbIdentity<User, Role, Guid>(mongoDbIdentityConfig)
+    .AddUserManager<UserManager<User>>()
+    .AddSignInManager<SignInManager<User>>()
+    .AddRoleManager<RoleManager<Role>>();
 builder.Services.AddScoped<JWTTokenService>();
 builder.Services.AddScoped<AuthService>();
 

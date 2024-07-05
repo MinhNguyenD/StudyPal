@@ -1,55 +1,112 @@
-﻿using MongoDB.Driver;
-using server.Exceptions;
+﻿using Microsoft.AspNetCore.Identity;
 using server.Models;
 
 namespace server.Services;
 
 public class AuthService
 {
-    private readonly IMongoClient _mongoClient;
-    private readonly IConfiguration _config;
-    private readonly IMongoDatabase _db;
-    private readonly IMongoCollection<User> _userCollection;
-    public AuthService(IConfiguration config, IMongoClient mongoClient)
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly SignInManager<User> _signinManager;
+
+    private readonly JWTTokenService _tokenService;
+    public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, JWTTokenService tokenService)
     {
-        _config = config;
-        _mongoClient = mongoClient;
-        _db = _mongoClient.GetDatabase(_config["MongoDB:DatabaseName"]);
-        _userCollection = _db.GetCollection<User>("Users");
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _signinManager = signInManager;
+        _tokenService = tokenService;
     }
 
-    public async Task<User> Register(RegisterRequestDto registerRequestDto)
+    public async Task<AuthResponseDto> Register(RegisterRequestDto registerRequestDto)
     {
         var newUser = new User()
         {
-            Username = registerRequestDto.Username,
+            UserName = registerRequestDto.Username,
             Email = registerRequestDto.Email,
             FirstName = registerRequestDto.FirstName,
-            LastName = registerRequestDto.LastName,
-            Password = registerRequestDto.Password,
+            LastName = registerRequestDto.LastName
         };
-        var existedUser = await _userCollection.Find(x => x.Email.Equals(newUser.Email)).FirstOrDefaultAsync();
+        var createUserResult = await _userManager.CreateAsync(newUser, registerRequestDto.Password);
+        if (!createUserResult.Succeeded)
+        {
 
-        if (existedUser != null)
-        {
-            throw new UserAlreadyExistsException("Email already exists");
+            return new AuthResponseDto
+            {
+                Succeeded = false,
+                Errors = createUserResult.Errors,
+            };
         }
-        existedUser = await _userCollection.Find(x => x.Username.Equals(newUser.Username)).FirstOrDefaultAsync();
-        if (existedUser != null)
+        var roleResult = await AddRolesToUser(newUser, registerRequestDto.Roles);
+        if (!roleResult.Succeeded)
         {
-            throw new UserAlreadyExistsException("Username already exists");
+            return new AuthResponseDto
+            {
+                Succeeded = false,
+                Errors = roleResult.Errors,
+            };
         }
-        await _userCollection.InsertOneAsync(newUser);
-        return newUser;
+        return new AuthResponseDto
+        {
+            Succeeded = true,
+            AuthUser = new AuthUserDto
+            {
+                Username = newUser.UserName,
+                Email = newUser.Email,
+                Token = _tokenService.GenerateToken(newUser)
+            }
+        };
     }
 
-    public async Task<User> Login(LoginRequestDto loginRequestDto)
+    private async Task<IdentityResult> AddRolesToUser(User user, List<string> roles)
     {
-        var user = await _userCollection.Find(x => x.Email.Equals(loginRequestDto.Email)).FirstOrDefaultAsync();
-        if (user == null || !user.Password.Equals(loginRequestDto.Password))
+        foreach (string role in roles)
         {
-            throw new InvalidCredentialsException("Invalid credentials. Email or password does not match");
+            var roleExists = await _roleManager.RoleExistsAsync(role);
+            if (!roleExists)
+            {
+                await _roleManager.CreateAsync(new Role
+                {
+                    Name = role
+                });
+            }
+            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!roleResult.Succeeded)
+            {
+                return roleResult;
+            }
         }
-        return user;
+        return IdentityResult.Success;
+    }
+    public async Task<AuthResponseDto> Login(LoginRequestDto loginRequestDto)
+    {
+        var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);
+        if (user == null)
+        {
+            return new AuthResponseDto
+            {
+                Succeeded = false,
+                Errors = ["Invalid Credentials. Email or Password does not match"],
+            };
+        }
+        var loginResult = await _signinManager.CheckPasswordSignInAsync(user, loginRequestDto.Password, false);
+        if (!loginResult.Succeeded)
+        {
+            return new AuthResponseDto
+            {
+                Succeeded = false,
+                Errors = ["Invalid Credentials. Email or Password does not match"],
+            };
+        }
+        return new AuthResponseDto
+        {
+            Succeeded = true,
+            AuthUser = new AuthUserDto
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                Token = _tokenService.GenerateToken(user)
+            }
+        };
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿// THIS IS NOT IN USE RIGHT NOW. IF THE TEAM WANT TO USE EF CORE, UNCOMMENT THIS
+/*
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
@@ -26,3 +27,4 @@ public class ApplicationDBContext : IdentityDbContext
         modelBuilder.Entity<User>().ToCollection("Users");
     }
 }
+*/
