@@ -51,6 +51,8 @@ public class AuthService
             Succeeded = true,
             AuthUser = new AuthUserDto
             {
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
                 Username = newUser.UserName,
                 Email = newUser.Email,
                 Token = _tokenService.GenerateToken(newUser)
@@ -103,10 +105,12 @@ public class AuthService
             Succeeded = true,
             AuthUser = new AuthUserDto
             {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Username = user.UserName,
                 Email = user.Email,
                 Token = _tokenService.GenerateToken(user)
-            }
+            },
         };
     }
 }
