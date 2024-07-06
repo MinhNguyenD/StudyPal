@@ -63,15 +63,17 @@ export default {
         async handleSubmit() {
             try {
                 const response = await axios.post(
-                    "http://localhost:5267/auth/login",
+                    "auth/login",
                     {
                         email: this.email,
                         password: this.password,
                     }
                 );
-                alert(response.data.token);
-                this.$router.push("/FAQ");
-            } catch {
+                localStorage.setItem('token', response.data.token);
+                //TODO: push to dashboard
+                this.$router.push("/");
+            } catch (error) {
+                console.log(error);
                 alert("Incorrect Username and/or Password!");
             }
         },

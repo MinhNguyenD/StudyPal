@@ -108,7 +108,7 @@ export default {
         async handleSubmit() {
             try {
                 const response = await axios.post(
-                    "http://localhost:5267/auth/register",
+                    "auth/register",
                     {
                         firstname: this.firstName,
                         lastname: this.lastName,
