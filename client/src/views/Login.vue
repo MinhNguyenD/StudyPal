@@ -49,10 +49,15 @@
 </template>
 
 <script>
+import { useUserStore } from "@/store/user";
 import axios from "axios";
 
 export default {
     name: "Login",
+    setup() {
+        const userStore = useUserStore();
+        return { userStore };
+    },
     data() {
         return {
             email: "",
@@ -70,8 +75,9 @@ export default {
                     }
                 );
                 localStorage.setItem('token', response.data.token);
+                this.userStore.login(response.data);
                 //TODO: push to dashboard
-                this.$router.push("/");
+                this.$router.push("/dashboard");
             } catch (error) {
                 console.log(error);
                 alert("Incorrect Username and/or Password!");

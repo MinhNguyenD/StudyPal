@@ -89,10 +89,15 @@
 </template>
 
 <script>
+import { useUserStore } from "@/store/user";
 import axios from "axios";
 
 export default {
     name: "Register",
+    setup() {
+        const userStore = useUserStore();
+        return { userStore };
+    },
     data() {
         return {
             firstName: "",
@@ -118,8 +123,9 @@ export default {
                         password: this.password,
                     }
                 )
+                this.userStore.register(response.data);
                 //TODO: push to login dashboard
-                this.$router.push("/");
+                this.$router.push("/dashboard");
             }
             catch (error) {
                 alert("Register failed!");

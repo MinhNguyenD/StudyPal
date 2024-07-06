@@ -1,15 +1,12 @@
-export default function authHeader() {
-    let user;
-    if(localStorage.getItem('user') == null){
-        user = null;
-    }
-    else{
-        user = JSON.parse(localStorage.getItem('user')!);
-    }
-  
-    if (user && user.accessToken) {
-      return 'Bearer ' + user.token;
-    } else {
-      return '';
-    }
+import { useUserStore } from "@/store/user";
+
+ export default function authHeader() {
+  const userStore = useUserStore();
+  let user = userStore.user;
+  let token = userStore.token;
+  if (user && token) {
+    return {Authorization: 'Bearer ' + user.token};
+  } else {
+    return '';
   }
+}
