@@ -6,10 +6,7 @@ interface AuthState {
 }
   
 export const useUserStore = defineStore("user", {
-  state: ():AuthState  => ({
-    user: null,
-  }),
-
+  state: ():AuthState => ({user:null}),
   actions: {
     register(user:User) {
       this.user = user;
@@ -21,5 +18,10 @@ export const useUserStore = defineStore("user", {
       localStorage.removeItem('token');
       this.user = null;
     }
+  },
+
+  getters: {
+    getUser: (state):User|null => state.user,
+    isAuthenticated: (state):boolean => !!state.user
   }
 });
