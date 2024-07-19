@@ -19,6 +19,6 @@
         @apply text-2xl;
     }
     h6 {
-        @apply text-6xl;
+        @apply text-xl;
     }
 }
