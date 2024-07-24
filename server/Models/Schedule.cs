@@ -6,7 +6,8 @@ namespace server.Models;
 public class Schedule {
     [BsonId]
     public ObjectId Id { get; set; }
-    public Guid UserId; // remove once user id is stored in the jwt token
-    public long TimeFrom;
-    public long TimeTo;
+    public Guid UserId { get; set; } // remove once user id is stored in the jwt token
+    public long TimeFrom { get; set; }
+    public long TimeTo { get; set; }
+    public string CourseId { get; set; }
 }
