@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using server.Dtos;
 using server.Models;
@@ -88,6 +89,38 @@ namespace server.Services
 
             var result = await _userManager.CheckPasswordAsync(user, password);
             return result;
+        }
+
+        public async Task AddCourse(string username, Course newCourse)
+        {
+            var currentUser = await _userManager.FindByNameAsync(username);
+            if (currentUser == null)
+            {
+                return;
+            }
+
+            List<Course> courseList = currentUser.Courses;
+
+            if (!(courseList == null))
+            {
+                foreach (Course course in courseList)
+                {
+                    if (newCourse.CourseCode == course.CourseCode)
+                    {
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                var filterCourse = Builders<User>.Filter.Eq(x => x.UserName, username);
+                var updateCourse = Builders<User>.Update.Push(x => x.Courses, newCourse);
+                await _userCollection.UpdateOneAsync(filterCourse, updateCourse);
+                return;
+
+            }
+            courseList.Add(newCourse);
+            await _userCollection.ReplaceOneAsync(x => x.UserName == username, currentUser);
         }
 
         public async Task RemoveAsync(string username) =>

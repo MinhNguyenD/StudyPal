@@ -13,6 +13,7 @@ namespace server.Controllers
     {
         private readonly UserService _userService;
         private readonly UserManager<User> _userManager;
+        //private readonly CourseService _courseService;
         public UserController(UserService userService, UserManager<User> userManager)
         {
             _userService = userService;
@@ -53,6 +54,21 @@ namespace server.Controllers
             await _userService.UpdatePasswordAsync(username, updatePasswordDto);
 
             return NoContent();
+        }
+
+        [HttpPut("course/{username}")]
+        public async Task<IActionResult> UpdateCourse(string username, [FromBody] CourseDto courseDto)
+        {
+            var newCourse = new Course()
+            {
+                CourseCode = courseDto.CourseCode,
+                CourseName = courseDto.CourseName
+            };
+            //await _courseService.AddCourse(newCourse);
+            await _userService.AddCourse(username, newCourse);
+            
+            return NoContent();
+
         }
     }
 }

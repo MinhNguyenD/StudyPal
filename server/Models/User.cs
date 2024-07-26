@@ -12,4 +12,5 @@ public class User : MongoIdentityUser<Guid>
     public string LastName { get; set; }
     public string University { get; set; }
     public string Major {  get; set; }
+    public List<Course> Courses { get; set; }
 }
