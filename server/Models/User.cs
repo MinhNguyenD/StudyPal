@@ -10,4 +10,6 @@ public class User : MongoIdentityUser<Guid>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string University { get; set; }
+    public string Major {  get; set; }
 }
