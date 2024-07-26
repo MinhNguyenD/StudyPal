@@ -17,11 +17,6 @@ const schedules = ref<Schedule[]>();
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const slots = ref<Map<string, { start: Date, data: SlotData }[]>>(getSlots())
 
-// TODO: use authHeader() instead once state management is fixed
-const getHeader = () => {
-    return { "Authorization": "Bearer " + localStorage.getItem("token") }
-}
-
 function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     const start = new Date(getWeekStart().getTime() + (8 * hours));
     const slots = new Map<string, { start: Date, data: SlotData }[]>();
@@ -59,16 +54,12 @@ async function createSlot(slot: Date, data: SlotData) {
                 timeTo: slot.getTime() + (1 * hours)
             }],
             courseId: route.params.id
-        }, { headers: getHeader() });
-    } else {
-        await server.delete(`schedule/delete/${data.id}`, {
-            headers: getHeader()
         });
+    } else {
+        await server.delete(`schedule/delete/${data.id}`);
     }
 
-    schedules.value = await (await server.get(`schedule/week/course/${route.params.id}`, {
-        headers: getHeader()
-    })).data;
+    schedules.value = await (await server.get(`schedule/week/course/${route.params.id}`)).data;
     slots.value = getSlots();
 }
 
@@ -78,9 +69,7 @@ watch(
         try {
             console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
-            schedules.value = await (await server.get(`schedule/week/course/${id}`, {
-                headers: getHeader()
-            })).data
+            schedules.value = await (await server.get(`schedule/week/course/${id}`)).data
             slots.value = getSlots();
 
         } catch (e) {
