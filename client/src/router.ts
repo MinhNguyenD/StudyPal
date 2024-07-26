@@ -6,7 +6,6 @@ import Login from "./views/Login.vue"
 import Register from "./views/Register.vue"
 import Dashboard from './views/Dashboard.vue'
 import { useUserStore } from './store/user'
-import Course from './components/course/Course.vue'
 import UpdateProfile from "./views/UpdateProfile.vue"
 import UpdateSecurity from "./views/UpdateSecurity.vue"
 import CourseList from "./views/Courses.vue"
@@ -32,9 +31,6 @@ const routes = [
       path: '/dashboard', component: Dashboard
     },
     {
-      path: '/course/:id', component: Course
-    },
-    {
       path: '/profile', component: UpdateProfile
     },
     {
@@ -51,9 +47,8 @@ const router = createRouter({
   });
 
   router.beforeEach(async (to) => {
-    console.log(to)
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/login', '/faq', '/register', '/contact' ,'/', '/course/csci3120']; // temp until redirect is fixed
+    const publicPages = ['/login', '/faq', '/register', '/contact' ,'/'];
     const authRequired = !publicPages.includes(to.path);
     const auth = useUserStore();
 
