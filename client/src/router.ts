@@ -7,6 +7,9 @@ import Register from "./views/Register.vue"
 import Dashboard from './views/Dashboard.vue'
 import { useUserStore } from './store/user'
 import Course from './components/course/Course.vue'
+import UpdateProfile from "./views/UpdateProfile.vue"
+import UpdateSecurity from "./views/UpdateSecurity.vue"
+import CourseList from "./views/Courses.vue"
 
 
 const routes = [
@@ -31,6 +34,14 @@ const routes = [
     {
       path: '/course/:id', component: Course
     }
+      path: '/profile', component: UpdateProfile
+    },
+    {
+      path: '/security', component: UpdateSecurity
+    },
+    {
+      path: '/courses', component: CourseList
+    },
 ]
 
 const router = createRouter({
