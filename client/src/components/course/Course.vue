@@ -4,14 +4,22 @@ import { days, getWeekStart, hours } from '@/lib/utils';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
+type SlotData = {
+    isSelected: true,
+    id: string
+} | {
+    isSelected: false
+}
+
 const route = useRoute()
 const schedules = ref<Schedule[]>();
 const userId = "99cecee5-36a9-4da8-ac9c-639463b36c4b"
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const slots = ref<Map<string, { start: Date, data: SlotData }[]>>(getSlots())
 
-function getSlots(): Map<string, { start: Date, data: { isSelected: boolean, id: string | null } }[]> {
+function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     const start = new Date(getWeekStart().getTime() + (8 * hours));
-    const slots = new Map<string, { start: Date, data: { isSelected: boolean, id: string | null } }[]>();
+    const slots = new Map<string, { start: Date, data: SlotData }[]>();
 
     for (let i = 0; i < 7; i++) {
         const dayStart = start.getTime() + (i * days);
@@ -27,35 +35,43 @@ function getSlots(): Map<string, { start: Date, data: { isSelected: boolean, id:
     return slots;
 }
 
-function getIsSelected(date: Date): { isSelected: boolean, id: string | null } {
+function getIsSelected(date: Date): SlotData {
     const schedule = schedules.value?.find(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime());
     if (schedule) {
-        return { isSelected: true, id: schedule.id }
+        if (schedule.id) {
+            return { isSelected: true, id: schedule.id }
+        }
     }
-    return { isSelected: false, id: null }
+    return { isSelected: false }
 }
 
-async function createSlot(slot: Date) {
-    server.post("schedule", {
-        schedule: [{
-            timeFrom: slot.getTime(),
-            timeTo: slot.getTime() + (1 * hours)
-        }],
-        userId: userId,
-        courseId: route.params.id
-    });
+async function createSlot(slot: Date, data: SlotData) {
+    console.log(data);
+    if (!data.isSelected) {
+        await server.post("schedule", {
+            schedule: [{
+                timeFrom: slot.getTime(),
+                timeTo: slot.getTime() + (1 * hours)
+            }],
+            userId: userId,
+            courseId: route.params.id
+        });
+    } else {
+        await server.delete(`schedule/delete/${data.id}`);
+    }
 
     schedules.value = await (await server.get(`schedule/week/${userId}/course/${route.params.id}`)).data;
+    slots.value = getSlots();
 }
-
-const slots = getSlots();
 
 watch(
     () => route.params.id,
     async (id) => {
         try {
+            // TODO: change url here depending on what view we are in 
             schedules.value = await (await server.get(`schedule/week/${userId}/course/${id}`)).data
-            console.log(schedules.value);
+            slots.value = getSlots();
+
         } catch (e) {
             console.error(e);
         }
@@ -66,19 +82,18 @@ watch(
 )
 </script>
 <template>
-    <h1>hello{{ route.params.id }}</h1>
     <div style="display: flex; justify-content: space-between;">
         <div class="parent">
             <div v-for="slot in slots">
-                <div v-for="{ start, } in slot[1]" style="display: flex; flex-direction: column;"
-                    @click="() => createSlot(start)">
-                    <p @click="() => console.log(start, start.getTime())"
-                        :class="[getIsSelected(start).isSelected ? 'active' : 'time-slot']">{{ start.toLocaleString(undefined, {
-                            day: "2-digit",
+                <h5>{{ slot[0] }}</h5>
+                <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
+                    @click="() => createSlot(start, data)">
+                    <h6 @click="() => console.log(start, start.getTime())"
+                        :class="[data.isSelected ? 'bg-primary' : 'time-slot']">{{ start.toLocaleString(undefined, {
                             hour: "2-digit",
                             minute: "2-digit",
                             second: "2-digit"
-                        }) }}</p>
+                        }) }}</h6>
                 </div>
             </div>
         </div>
@@ -93,12 +108,8 @@ watch(
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     margin: auto;
+    margin-top: 60px;
     width: 80%;
-}
-
-.active
-{
-    background-color: green;
 }
 
 .time-slot

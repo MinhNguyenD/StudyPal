@@ -85,12 +85,12 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
     }
 
     [HttpDelete("delete/{scheduleId}")]
-    public async Task<IActionResult> Delete(ObjectId scheduleId) {
+    public async Task<IActionResult> Delete(string scheduleId) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
 
-        var result = await _schedules.DeleteOneAsync(schedule => schedule.Id == scheduleId);
+        var result = await _schedules.DeleteOneAsync(schedule => schedule.Id == ObjectId.Parse(scheduleId));
         if (result.DeletedCount == 1) {
             return Ok();
         }
