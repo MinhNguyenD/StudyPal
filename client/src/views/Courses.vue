@@ -76,7 +76,7 @@ export default {
             const currentUser = this.userStore.getUser;
 
             try {
-                const response = await axios.get(`http://localhost:5267/update/user/${currentUser.username}`);
+                const response = await axios.get(`update/user/${currentUser.username}`);
                 this.courses = response.data.courses;
             }
             catch (error) {
@@ -92,7 +92,7 @@ export default {
                 return;
             }
             try {
-                const update = await axios.put(`http://localhost:5267/update/user/course/${currentUser.username}`,
+                const update = await axios.put(`update/user/course/${currentUser.username}`,
                     {
                         courseCode: this.courseCode,
                         courseName: this.courseName
