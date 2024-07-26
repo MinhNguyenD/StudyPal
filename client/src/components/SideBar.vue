@@ -121,7 +121,12 @@ export default {
     },
     setActiveLink(link) {
         this.activeLink = link;
-        this.$router.push(`/${link}`);
+        if (link == "schedule") {
+            this.$router.push("/courses");
+        }
+        else {
+            this.$router.push(`/${link}`);
+        }
     }
   },
 };

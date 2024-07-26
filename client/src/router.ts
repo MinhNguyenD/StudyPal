@@ -8,6 +8,7 @@ import Dashboard from './views/Dashboard.vue'
 import { useUserStore } from './store/user'
 import UpdateProfile from "./views/UpdateProfile.vue"
 import UpdateSecurity from "./views/UpdateSecurity.vue"
+import CourseList from "./views/Courses.vue"
 
 
 const routes = [
@@ -34,7 +35,10 @@ const routes = [
     },
     {
       path: '/security', component: UpdateSecurity
-    }
+    },
+    {
+      path: '/courses', component: CourseList
+    },
 ]
 
 const router = createRouter({
