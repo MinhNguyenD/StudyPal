@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { server } from '@/instance';
 import { days, getWeekStart, hours } from '@/lib/utils';
+import authHeader from '@/services/authHeader';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -13,9 +14,13 @@ type SlotData = {
 
 const route = useRoute()
 const schedules = ref<Schedule[]>();
-const userId = "99cecee5-36a9-4da8-ac9c-639463b36c4b"
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const slots = ref<Map<string, { start: Date, data: SlotData }[]>>(getSlots())
+
+// TODO: use authHeader() instead once state management is fixed
+const getHeader = () => {
+    return { "Authorization": "Bearer " + localStorage.getItem("token") }
+}
 
 function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     const start = new Date(getWeekStart().getTime() + (8 * hours));
@@ -53,14 +58,17 @@ async function createSlot(slot: Date, data: SlotData) {
                 timeFrom: slot.getTime(),
                 timeTo: slot.getTime() + (1 * hours)
             }],
-            userId: userId,
             courseId: route.params.id
-        });
+        }, { headers: getHeader() });
     } else {
-        await server.delete(`schedule/delete/${data.id}`);
+        await server.delete(`schedule/delete/${data.id}`, {
+            headers: getHeader()
+        });
     }
 
-    schedules.value = await (await server.get(`schedule/week/${userId}/course/${route.params.id}`)).data;
+    schedules.value = await (await server.get(`schedule/week/course/${route.params.id}`, {
+        headers: getHeader()
+    })).data;
     slots.value = getSlots();
 }
 
@@ -68,8 +76,11 @@ watch(
     () => route.params.id,
     async (id) => {
         try {
+            console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
-            schedules.value = await (await server.get(`schedule/week/${userId}/course/${id}`)).data
+            schedules.value = await (await server.get(`schedule/week/course/${id}`, {
+                headers: getHeader()
+            })).data
             slots.value = getSlots();
 
         } catch (e) {

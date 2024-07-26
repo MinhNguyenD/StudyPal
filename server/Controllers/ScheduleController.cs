@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -15,9 +16,10 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
+        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         List<Schedule> parsed = scheduleRequest.Schedule.Select(elem => new Schedule {
-                TimeFrom = elem.TimeFrom, TimeTo = elem.TimeTo, UserId = scheduleRequest.UserId,
+                TimeFrom = elem.TimeFrom, TimeTo = elem.TimeTo, UserId = Guid.Parse(userId),
                 CourseId = scheduleRequest.CourseId
             })
             .Where(elem => elem.TimeFrom < elem.TimeTo).ToList();
@@ -63,8 +65,8 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         return Ok(results.ToList());
     }
 
-    [HttpGet("week/{userId}/course/{courseId}")]
-    public async Task<IActionResult> GetCurrentWeekByCourse(Guid userId, string courseId) {
+    [HttpGet("week/course/{courseId}")]
+    public async Task<IActionResult> GetCurrentWeekByCourse(string courseId) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
@@ -74,7 +76,6 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         var theWeeknd = weekStart.AddDays(7);
 
         var results = await _schedules.FindAsync(elem =>
-                elem.UserId == userId &&
                 elem.CourseId == courseId &&
                 elem.TimeFrom >= ((DateTimeOffset)weekStart).ToUnixTimeMilliseconds() &&
                 elem.TimeTo <=

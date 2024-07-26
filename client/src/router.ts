@@ -33,7 +33,8 @@ const routes = [
     },
     {
       path: '/course/:id', component: Course
-    }
+    },
+    {
       path: '/profile', component: UpdateProfile
     },
     {
