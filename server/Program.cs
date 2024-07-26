@@ -20,6 +20,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(builder.Configuration["MongoDB:AtlasURI"]));
+builder.Services.AddTransient<UserService>();
 //add mongoIdentityConfiguration...
 var mongoDbIdentityConfig = new MongoDbIdentityConfiguration
 {
