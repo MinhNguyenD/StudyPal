@@ -121,6 +121,7 @@ export default {
     },
     setActiveLink(link) {
         this.activeLink = link;
+        this.$router.push(`/${link}`);
     }
   },
 };

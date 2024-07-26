@@ -6,6 +6,8 @@ import Login from "./views/Login.vue"
 import Register from "./views/Register.vue"
 import Dashboard from './views/Dashboard.vue'
 import { useUserStore } from './store/user'
+import UpdateProfile from "./views/UpdateProfile.vue"
+import UpdateSecurity from "./views/UpdateSecurity.vue"
 
 
 const routes = [
@@ -26,6 +28,12 @@ const routes = [
     },
     { 
       path: '/dashboard', component: Dashboard
+    },
+    {
+      path: '/profile', component: UpdateProfile
+    },
+    {
+      path: '/security', component: UpdateSecurity
     }
 ]
 

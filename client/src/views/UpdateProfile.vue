@@ -11,39 +11,25 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <h2 class="text-lg font-bold">Username</h2>
-                    <button class="mt-2 px-3 py-2 bg-blue-500 text-white rounded-full flex items-center space-x-1">
-                        <svg class="mb-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="19"
-                            height="19"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            >
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                            <circle cx="12" cy="13" r="4" />
-                        </svg>
-                        <span class="pl-2">Edit Photo</span>
-                    </button>
+                    <h2 class="text-lg font-bold">{{ userStore.getUser.username }}</h2>
+                    <h2 class="text-lg">{{ userStore.getUser.email }}</h2>
                 </div>
             </div>
-            <form class="w-full max-w-lg mt-10" @submit.prevent="submitForm">
+            <form class="w-full max-w-lg mt-10" @submit.prevent="updateProfile">
                 <div class="flex flex-wrap -mx-3 mb-5">
                     <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="firstname">
                             First Name
                         </label>
-                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="firstName" type="text" v-model="firstName" />
+                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="firstName" type="text" v-model="user.firstName" />
+                        <p class="text-red-500 text-xs italic" v-if="user.firstnameError.length > 0">{{ user.firstnameError }}</p>
                     </div>
                     <div class="w-full md:w-1/2 px-3">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="lastname">
                             Last Name
                         </label>
-                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="lastName" type="text" v-model="lastName" />
+                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="lastName" type="text" v-model="user.lastName" />
+                        <p class="text-red-500 text-xs italic" v-if="user.lastnameError.length > 0">{{ user.lastnameError }}</p>
                     </div>
                 </div>
                 <div class="flex flex-wrap -mx-3 mb-5">
@@ -51,23 +37,25 @@
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="university">
                             University
                         </label>
-                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="university" type="text" v-model="university" />
+                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="university" type="text" v-model="user.university" />
+                        <p class="text-red-500 text-xs italic" v-if="user.universityError.length > 0">{{ user.universityError }}</p>
                     </div>
                     <div class="w-full md:w-1/2 px-3">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="major">
                             Major
                         </label>
-                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="major" type="text" v-model="major" />
+                        <input class="appearance-none block w-full h-10 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="major" type="text" v-model="user.major" />
+                        <p class="text-red-500 text-xs italic" v-if="user.majorError.length > 0">{{ user.majorError }}</p>
                     </div>
                 </div>
                 <div class="uppercase tracking-wide text-gray-700 text-xs font-bold mb-3">Choose Role:</div>
                 <div class="flex flex-wrap mb-5">
                     <div class="flex items-center me-10">
-                        <input class="w-4 h-4 text-blue-600 bg-gray-200 border-gray-300 rounded focus:ring-blue-500" type="checkbox" id="student" v-model="checkedStudent">
+                        <input class="w-4 h-4 text-blue-600 bg-gray-200 border-gray-300 rounded focus:ring-blue-500" type="checkbox" id="student" value="Student" v-model="user.checkedRoles">
                         <label class="ms-2 text-base font-medium" for="student">Student</label>
                     </div>
                     <div class="flex items-center">
-                        <input class="w-4 h-4 text-blue-600 bg-gray-200 border-gray-300 rounded focus:ring-blue-500" type="checkbox" id="tutor" v-model="checkedTutor">
+                        <input class="w-4 h-4 text-blue-600 bg-gray-200 border-gray-300 rounded focus:ring-blue-500" type="checkbox" id="tutor" value="Tutor" v-model="user.checkedRoles">
                         <label class="ms-2 text-base font-medium" for="tutor">Tutor</label>
                     </div>
                 </div>
@@ -79,7 +67,7 @@
                         </button>
                     </div>
                     <div class="flex items-center">
-                        <button class="hover:bg-red-500 hover:text-white text-red-500 border-2 border-red-500 font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline" type="submit">
+                        <button class="hover:bg-red-500 hover:text-white text-red-500 border-2 border-red-500 font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
                             Delete Profile
                         </button>
                     </div>
@@ -87,26 +75,129 @@
             </form>
         </div>
     </div>
+    <div v-if="updateSuccessfully" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-medium text-gray-900">Success</h3>
+                <button @click="hideModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <div class="mt-4">
+                <p>Your information has been updated.</p>
+            </div>
+            <div class="mt-6 text-right">
+                <button @click="hideModal" class="bg-primary text-white py-2 px-4 rounded hover:bg-blue-700">OK</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 import SideBar from '../components/SideBar.vue';
 import ProfilePic from '../assets/avatar.png';
+import { useUserStore } from '@/store/user';
+import authHeader from '@/services/authHeader';
+import axios from 'axios';
 
 export default {
     components: {
         SideBar
     },
+    setup() {
+        const userStore = useUserStore();
+        return {
+            userStore
+        }
+    },
     data() {
         return {
             ProfilePic,
-            firstName: "",
-            lastName: "",
-            university: "",
-            major: "",
-            checkedStudent: "",
-            checkedTutor: ""
+            user: {
+                firstName: "",
+                lastName: "",
+                university: "",
+                major: "", 
+                checkedRoles: [],
+                firstnameError: "",
+                lastnameError: "",
+                universityError: "",
+                majorError: "",
+            },
+            updateSuccessfully: false
         }
+    },
+    methods: {
+       async updateProfile() {
+        if (!this.validateForm()) {
+            return;
+        }
+        const currentUser = this.userStore.getUser;
+        if (this.user.firstName == "") {
+            this.user.firstName = currentUser.firstName;
+            console.log(this.user.firstName);
+        }
+        if (this.user.lastName == "") {
+            this.user.lastName = currentUser.lastName;
+            console.log(this.user.lastName);
+        }
+
+        try {
+            const update = await axios.put(`update/user/${currentUser.username}`, {
+                firstname: this.user.firstName,
+                lastname: this.user.lastName,
+                university: this.user.university,
+                major: this.user.major,
+                roles: this.user.checkedRoles
+            });
+            this.updateSuccessfully = true;
+        }
+        catch(error) {
+            console.log("Error:", error);
+        }
+       },
+       validateForm() {
+        const fieldRegex = /^[A-Za-z ]+$/;
+        var formValidated = true;
+        if (!(this.user.firstName == "")) {
+            if(!(fieldRegex.test(this.user.firstName))) {
+                this.user.firstnameError = "First name should contain only letters.";
+                formValidated = false;
+            }
+            else {
+                this.user.firstnameError = "";
+            }
+        }
+        if (!(this.user.lastName == "")) {
+            if(!(fieldRegex.test(this.user.lastName))) {
+                this.user.lastnameError = "Last name should contain only letters.";
+                formValidated = false;
+            }
+            else {
+                this.user.lastnameError = "";
+            }
+        }
+        if (!(this.user.university == "")) {
+            if(!(fieldRegex.test(this.user.university))) {
+                this.user.universityError = "University should contain only letters.";
+                formValidated = false;
+            }
+            else {
+                this.user.universityError = "";
+            }
+        }
+        if (!(this.user.major == "")) {
+            if(!(fieldRegex.test(this.user.major))) {
+                this.user.majorError = "Major should contain only letters."
+                formValidated = false;
+            }
+            else {
+                this.user.majorError = "";
+            }
+        }
+        return formValidated
+       },
+       hideModal() {
+        this.updateSuccessfully = false;
+       } 
     }
 }
 </script>
