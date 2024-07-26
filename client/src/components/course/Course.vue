@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { server } from '@/instance';
 import { days, getWeekStart, hours } from '@/lib/utils';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -8,9 +9,9 @@ const schedules = ref<Schedule[]>();
 const userId = "99cecee5-36a9-4da8-ac9c-639463b36c4b"
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-function getSlots(): Map<string, Date[]> {
+function getSlots(): Map<string, { start: Date, data: { isSelected: boolean, id: string | null } }[]> {
     const start = new Date(getWeekStart().getTime() + (8 * hours));
-    const slots = new Map<string, Date[]>();
+    const slots = new Map<string, { start: Date, data: { isSelected: boolean, id: string | null } }[]>();
 
     for (let i = 0; i < 7; i++) {
         const dayStart = start.getTime() + (i * days);
@@ -18,17 +19,33 @@ function getSlots(): Map<string, Date[]> {
             if (!slots.has(week[i])) {
                 slots.set(week[i], []);
             }
-            slots.get(week[i])?.push(new Date(j));
+            const date = new Date(j);
+            slots.get(week[i])?.push({ start: date, data: getIsSelected(date) });
         }
     }
 
     return slots;
 }
 
-function isSelected(date: Date): boolean {
-    const val = schedules.value?.some(i => i.timeFrom < date.getTime() && i.timeTo > date.getTime() ) ?? false
-    console.log(val);
-    return val;
+function getIsSelected(date: Date): { isSelected: boolean, id: string | null } {
+    const schedule = schedules.value?.find(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime());
+    if (schedule) {
+        return { isSelected: true, id: schedule.id }
+    }
+    return { isSelected: false, id: null }
+}
+
+async function createSlot(slot: Date) {
+    server.post("schedule", {
+        schedule: [{
+            timeFrom: slot.getTime(),
+            timeTo: slot.getTime() + (1 * hours)
+        }],
+        userId: userId,
+        courseId: route.params.id
+    });
+
+    schedules.value = await (await server.get(`schedule/week/${userId}/course/${route.params.id}`)).data;
 }
 
 const slots = getSlots();
@@ -37,7 +54,7 @@ watch(
     () => route.params.id,
     async (id) => {
         try {
-            schedules.value = await (await fetch(`http://localhost:5267/api/schedule/week/${userId}/course/${id}`)).json();
+            schedules.value = await (await server.get(`schedule/week/${userId}/course/${id}`)).data
             console.log(schedules.value);
         } catch (e) {
             console.error(e);
@@ -53,12 +70,15 @@ watch(
     <div style="display: flex; justify-content: space-between;">
         <div class="parent">
             <div v-for="slot in slots">
-                <div v-for="date in slot[1]" style="display: flex; flex-direction: column;">
-                    <p @click="() => console.log(date, date.getTime())" :class="[isSelected(date) ? 'active' : 'time-slot']">{{ date.toLocaleString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }) }}</p>
+                <div v-for="{ start, } in slot[1]" style="display: flex; flex-direction: column;"
+                    @click="() => createSlot(start)">
+                    <p @click="() => console.log(start, start.getTime())"
+                        :class="[getIsSelected(start).isSelected ? 'active' : 'time-slot']">{{ start.toLocaleString(undefined, {
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit"
+                        }) }}</p>
                 </div>
             </div>
         </div>
@@ -76,7 +96,8 @@ watch(
     width: 80%;
 }
 
-.active {
+.active
+{
     background-color: green;
 }
 

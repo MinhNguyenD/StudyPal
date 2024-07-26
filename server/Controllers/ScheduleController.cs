@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using server.Models;
 
@@ -81,5 +82,19 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         );
 
         return Ok(results.ToList());
+    }
+
+    [HttpDelete("delete/{scheduleId}")]
+    public async Task<IActionResult> Delete(ObjectId scheduleId) {
+        if (!ModelState.IsValid) {
+            return BadRequest(ModelState);
+        }
+
+        var result = await _schedules.DeleteOneAsync(schedule => schedule.Id == scheduleId);
+        if (result.DeletedCount == 1) {
+            return Ok();
+        }
+
+        return NotFound();
     }
 }
