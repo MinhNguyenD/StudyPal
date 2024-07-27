@@ -5,6 +5,7 @@ const getHeader = () => {
 }
 
 export const server = axios.create({
+    // baseURL: "http://localhost:5267/api/",
     baseURL: "https://csci4177grp-20-1.onrender.com/api",
     headers: getHeader()
 });
