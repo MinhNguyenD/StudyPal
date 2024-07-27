@@ -273,18 +273,21 @@ export default {
         return;
       }
       try {
-        const response = await axios.post("auth/register", {
-          firstname: this.form.firstName,
-          lastname: this.form.lastName,
-          username: this.form.username,
-          email: this.form.email,
-          roles: this.form.checkedRoles,
-          password: this.form.password,
-        });
-        this.userStore.register(response.data);
+        await this.userStore.register(
+          this.form.firstName,
+          this.form.lastName,
+          this.form.username,
+          this.form.email,
+          this.form.checkedRoles,
+          this.form.password
+        );
         this.$router.push("/dashboard");
       } catch (error) {
-        alert("Register failed!");
+        if (error.response && error.response.data) {
+          if (error.response.data[0].code) {
+            this.errors.username = error.response.data[0].description;
+          }
+        }
       }
     },
 

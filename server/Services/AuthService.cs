@@ -20,6 +20,20 @@ public class AuthService
 
     public async Task<AuthResponseDto> Register(RegisterRequestDto registerRequestDto)
     {
+        var existingUser = await _userManager.FindByEmailAsync(registerRequestDto.Email);
+        if (existingUser != null)
+        {
+            return new AuthResponseDto
+            {
+                Succeeded = false,
+                Errors = new List<object>(){ new {
+                    Code = "DuplicateEmail",
+                    Description = $"Email '{registerRequestDto.Email}' is already taken"
+                }
+                },
+            };
+        }
+
         var newUser = new User()
         {
             UserName = registerRequestDto.Username,
