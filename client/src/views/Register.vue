@@ -284,8 +284,13 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         if (error.response && error.response.data) {
-          if (error.response.data[0].code) {
-            this.errors.username = error.response.data[0].description;
+          for (const e in error.response.data) {
+            if (e.code === "DuplicateUserName") {
+              this.errors.username = e.description;
+            }
+            if (e.code === "DuplicateEmail") {
+              this.errors.email = e.description;
+            }
           }
         }
       }

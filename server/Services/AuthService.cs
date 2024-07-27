@@ -20,20 +20,33 @@ public class AuthService
 
     public async Task<AuthResponseDto> Register(RegisterRequestDto registerRequestDto)
     {
+        var errors = new List<object>();
+        var existingUsername = await _userManager.FindByNameAsync(registerRequestDto.Username);
+        if (existingUsername != null)
+        {
+            errors.Add(new {
+                    Code = "DuplicateUserName",
+                    Description = $"Email '{registerRequestDto.Email}' is already taken"
+                });
+        }
+
         var existingUser = await _userManager.FindByEmailAsync(registerRequestDto.Email);
         if (existingUser != null)
         {
+            errors.Add(new {
+                    Code = "DuplicateEmail",
+                    Description = $"Email '{registerRequestDto.Email}' is already taken"
+                });
+        }
+
+        if(errors.Count > 0){
             return new AuthResponseDto
             {
                 Succeeded = false,
-                Errors = new List<object>(){ new {
-                    Code = "DuplicateEmail",
-                    Description = $"Email '{registerRequestDto.Email}' is already taken"
-                }
-                },
+                Errors = errors,
             };
         }
-
+        
         var newUser = new User()
         {
             UserName = registerRequestDto.Username,
