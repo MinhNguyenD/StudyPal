@@ -48,7 +48,7 @@ function getIsSelected(date: Date): SlotData {
 async function createSlot(slot: Date, data: SlotData) {
     console.log(data);
     if (!data.isSelected) {
-        await server.post("schedule", {
+        await server.post("api/schedule", {
             schedule: [{
                 timeFrom: slot.getTime(),
                 timeTo: slot.getTime() + (1 * hours)
@@ -56,10 +56,10 @@ async function createSlot(slot: Date, data: SlotData) {
             courseId: route.params.id
         });
     } else {
-        await server.delete(`schedule/delete/${data.id}`);
+        await server.delete(`api/schedule/delete/${data.id}`);
     }
 
-    schedules.value = await (await server.get(`schedule/week/course/${route.params.id}`)).data;
+    schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
     slots.value = getSlots();
 }
 
@@ -69,7 +69,7 @@ watch(
         try {
             console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
-            schedules.value = await (await server.get(`schedule/week/course/${id}`)).data
+            schedules.value = await (await server.get(`api/schedule/week/course/${id}`)).data
             slots.value = getSlots();
 
         } catch (e) {
