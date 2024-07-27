@@ -344,7 +344,7 @@ export default {
         validated = false;
       } else if (!passwordRegEx.test(this.form.password)) {
         validated = false;
-        this.errors.password = `Password must be at least 8 characters long and include at least one digit, 1 lowercase letter, 1 uppercase letter, and 1 special character`;
+        this.errors.password = `Password must be at least 8 characters long and include at least 1 digit, 1 lowercase letter, 1 uppercase letter, and 1 special character`;
       }
 
       if (

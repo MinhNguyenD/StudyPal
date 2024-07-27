@@ -8,12 +8,22 @@ namespace server;
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
+
+    /// <summary>
+    /// Constructor for AuthController that initializes the authentication service.
+    /// </summary>
+    /// <param name="authService">Instance of the AuthService</param>
     public AuthController(AuthService authService)
     {
         _authService = authService;
     }
 
 
+    /// <summary>
+    /// Registers a new user.
+    /// </summary>
+    /// <param name="registerRequestDto">Registration request data</param>
+    /// <returns>Action result indicating success or failure</returns>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
     {
@@ -29,6 +39,12 @@ public class AuthController : ControllerBase
         return Ok(registerResponse.AuthUser);
     }
 
+
+    /// <summary>
+    /// Logs in a user.
+    /// </summary>
+    /// <param name="loginRequestDto">Login request data</param>
+    /// <returns>Action result indicating success or failure</returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {

@@ -31,13 +31,12 @@ var mongoDbIdentityConfig = new MongoDbIdentityConfiguration
     },
     IdentityOptionsAction = options =>
     {
-        // TODO: Change based on password requirement
-        options.Password.RequireDigit = false;
-        options.Password.RequiredLength = 1;
-        options.Password.RequireLowercase = false;
-        options.Password.RequiredUniqueChars = 0;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
+        options.Password.RequireLowercase = true;
+        options.Password.RequiredUniqueChars = 1;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
     }
 };
 
