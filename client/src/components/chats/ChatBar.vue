@@ -80,8 +80,8 @@ export default defineComponent({
       const date = new Date(time);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     },
-    openChatWindow({ username, currentUserId }: { username: string, currentUserId: string }) {
-      this.$emit('open-chat', { username, currentUserId });
+    openChatWindow({ username }: { username: string }) {
+      this.$emit('open-chat', { username });
     },
     formatMessage(msg: string) {
       const maxLength = 25;
