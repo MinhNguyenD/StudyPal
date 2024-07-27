@@ -9,7 +9,7 @@
             <ul class="divide-y divide-gray-200">
                 <li v-for="course in courses" :key="course.id" class="py-4">
                     <RouterLink
-                        :to="'/course/' + course.courseCode.replaceAll(whitespace, replaced) + course.courseName.replaceAll(whitespace, replaced)"
+                        :to="'/course/' + course.courseCode.replaceAll(whitespace, replaced)"
                         class="block hover:bg-gray-100 px-4 py-2 rounded-md transition-colors duration-200 text-medium">
                         {{ course.courseCode }}: {{ course.courseName }}
                     </RouterLink>
@@ -74,12 +74,14 @@
     </div>
   </div>
 </template>
+
 <script>
+// TODO: this script should have used typesript <script lang="ts">
 import SideBar from "../components/SideBar.vue"
 import axios from 'axios'
 import { useUserStore } from '@/store/user';
 import { RouterLink } from "vue-router";
-
+import { server } from '@/instance';
 // because i cant put quotes in the html tag
 const whitespace = " ";
 const replaced = "";
@@ -111,9 +113,10 @@ export default {
       const currentUser = this.userStore.storedUser;
 
             try {
-                const response = await axios.get(`update/user/${currentUser.username}`);
+                const response = await server.get(`/api/course`);
 
-                this.courses = response.data.courses;
+                this.courses = response.data;
+                console.log(this.courses);
             }
             catch (error) {
                 console.log("Error fetching courses: ", error);
@@ -128,10 +131,10 @@ export default {
                 return;
             }
             try {
-                const update = await axios.put(`update/user/course/${currentUser.username}`,
+                const update = await server.post(`/api/course`,
                     {
-                        courseCode: this.courseCode,
-                        courseName: this.courseName
+                        code: this.courseCode,
+                        name: this.courseName
                     }
                 );
                 alert("Add Course Successfully");

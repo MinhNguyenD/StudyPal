@@ -71,7 +71,11 @@ watch(
         try {
             console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
-            schedules.value = await (await server.get(`api/schedule/week/course/${id}`)).data
+            const response = await server.get(`api/schedule/week/course/${id}`);
+            if (response.status === 404) {
+                alert("Course Not Found");
+            }
+            schedules.value = await response.data;
             console.log(schedules.value);
             slots.value = getSlots();
 

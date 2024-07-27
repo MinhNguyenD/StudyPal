@@ -35,7 +35,7 @@ public class CourseController(IMongoClient client) : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromBody] CourseRequest courseRequest) {
+    public async Task<IActionResult> GetAll() {
         if (!ModelState.IsValid) {
             return BadRequest();
         }
