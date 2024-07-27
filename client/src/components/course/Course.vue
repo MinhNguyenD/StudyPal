@@ -80,7 +80,6 @@ async function revalidate(courseId: string) {
     const currentUser = getUserId();
     if (isEditable.value) {
         schedules.value = await (await server.get(`api/schedule/week/user/${currentUser}/course/${courseId}`)).data;
-        // schedules.value = schedules.value?.filter(schedule => schedule.userId === currentUser)
     } else {
         schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
     }
@@ -92,7 +91,7 @@ async function handleClick(slot: Date, data: SlotData) {
     if (isEditable.value) {
         await createSlot(slot, data);
     } else {
-        // handle getting user id's
+        // handle creating chat
         if (data.isSelected) {
             console.log(data.users);
         }
@@ -111,12 +110,7 @@ watch(
     async (id) => {
         try {
             // TODO: change url here depending on what view we are in 
-
             await revalidate(id as string);
-            // if (response.status === 404) {
-            //     alert("Course Not Found");
-            // }
-            // schedules.value = await response.data;
             console.log(getUserId());
             console.log(schedules.value?.map(i => i.userId));
             slots.value = getSlots();
@@ -129,10 +123,27 @@ watch(
         immediate: true
     }
 )
+function getHeading() {
+    if (isEditable.value) {
+        return "Currently viewing your availability"
+    } else {
+        return "Currently viewing all availabilities"
+    }
+}
+
 </script>
 <template>
-    <div style="display: flex; justify-content: space-between;">
-        <input type="checkbox" name="editable" id="editable" @change="() => handleEditable()">
+    <div class="w-100 flex flex-col justify-items-center align-middle mt-12">
+        <div class="flex justify-between w-4/5 mx-auto">
+            <h4>
+                <h4 class="text-center inline mr-5">Edit your availability</h4>
+                <input type="checkbox" class="inline" name="editable" id="editable" @change="() => handleEditable()">
+            </h4>
+            <h4>
+                {{ getHeading() }}
+            </h4>
+        </div>
+
         <div class="parent">
             <div v-for="slot in slots">
                 <h5>{{ slot[0] }}</h5>
