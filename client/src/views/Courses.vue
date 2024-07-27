@@ -47,7 +47,7 @@
 import SideBar from "../components/SideBar.vue"
 import axios from 'axios'
 import { useUserStore } from '@/store/user';
-
+import authHeader from '@/services/authHeader';
 
 export default {
     components: {
@@ -76,7 +76,7 @@ export default {
             const currentUser = this.userStore.getUser;
 
             try {
-                const response = await axios.get(`update/user/${currentUser.username}`);
+                const response = await axios.get(`update/user/${currentUser.username}`, { headers: authHeader() });
                 this.courses = response.data.courses;
             }
             catch (error) {
@@ -116,7 +116,7 @@ export default {
             else {
                 this.courseCodeError = "";
             }
-            if (this.courses.length > 0) {
+            if (!(this.course == null) && (this.courses.length > 0)) {
                 this.courses.forEach(course => {
                     if (this.courseCode == course.courseCode) {
                         this.courseCodeError = "Course existed!";

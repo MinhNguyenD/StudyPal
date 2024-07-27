@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using server.Dtos;
 using server.Models;
+using MongoDB.Bson;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace server.Services
 {
@@ -113,11 +115,16 @@ namespace server.Services
             }
             else
             {
+                // create the array field for courses if value is null
+                var checkNull = Builders<User>.Filter.Exists(x => x.Courses, false) | Builders<User>.Filter.Eq("Course", BsonNull.Value);
+                var updateArray = Builders<User>.Update.Set("Courses", new BsonArray());
+                await _userCollection.UpdateManyAsync(checkNull, updateArray);
+
+                // add the courses
                 var filterCourse = Builders<User>.Filter.Eq(x => x.UserName, username);
                 var updateCourse = Builders<User>.Update.Push(x => x.Courses, newCourse);
                 await _userCollection.UpdateOneAsync(filterCourse, updateCourse);
                 return;
-
             }
             courseList.Add(newCourse);
             await _userCollection.ReplaceOneAsync(x => x.UserName == username, currentUser);
