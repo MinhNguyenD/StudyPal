@@ -4,8 +4,7 @@
         <div class="flex-1 p-6 pl-8">
             <div class="px-4 flex items-center justify-between bg-white">
                 <h2 class="text-3xl font-bold mb-4">Course List</h2>
-                <button class="px-4 py-1 bg-primary text-white font-semibold rounded-full hover:bg-blue-700"
-                    @click="addCourse">Add Course</button>
+                <button class="px-4 py-1 bg-primary text-white font-semibold rounded-full hover:bg-blue-700" @click="addCourse">Add Course</button>
             </div>
             <ul class="divide-y divide-gray-200">
                 <li v-for="course in courses" :key="course.id" class="py-4">
@@ -27,23 +26,19 @@
             <form @submit.prevent="handleSubmit">
                 <div class="mb-4">
                     <label for="code" class="block text-gray-700">Course Code</label>
-                    <input type="text" id="code" v-model="courseCode"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required />
-                    <p class="mt-1 text-red-500 text-xs italic" v-if="courseCodeError.length > 0">{{ courseCodeError }}
-                    </p>
+                    <input type="text" id="code" v-model="courseCode" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required/>
+                    <p class="mt-1 text-red-500 text-xs italic" v-if="courseCodeError.length > 0">{{ courseCodeError }}</p>
                 </div>
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700">Course Name</label>
-                    <input type="text" id="name" v-model="courseName"
-                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required />
+                    <input type="text" id="name" v-model="courseName" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required/>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" @click="closeModal"
-                        class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-                        Cancel
+                    <button type="button" @click="closeModal" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                    Cancel
                     </button>
                     <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
-                        Submit
+                    Submit
                     </button>
                 </div>
             </form>
@@ -121,7 +116,7 @@ export default {
         validateForm() {
             const formRegex = /^[A-Za-z0-9 ]+$/;
             var formValidated = true;
-            if (!(formRegex.test(this.courseCode))) {
+            if(!(formRegex.test(this.courseCode))) {
                 this.courseCodeError = "Code can only contain letters and numbers";
                 formValidated = false;
             }
