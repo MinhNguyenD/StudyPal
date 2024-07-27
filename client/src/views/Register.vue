@@ -289,7 +289,6 @@ export default {
               this.errors.username = e.description;
             }
             if (e.code === "DuplicateEmail") {
-              console.log("hehehe");
               this.errors.email = e.description;
             }
           }
