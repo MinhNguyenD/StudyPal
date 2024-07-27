@@ -73,10 +73,9 @@ router.beforeEach(async (to) => {
     "/register",
     "/contact",
     "/",
-    "/course/csci3120",
   ]; // temp until redirect is fixed
   const authRequired =
-    !publicPages.includes(to.path) && !to.path.match(/\/course\/.*/);
+    !publicPages.includes(to.path);
   const auth = useUserStore();
 
   if (authRequired && !auth.storedUser) {

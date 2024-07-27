@@ -7,7 +7,8 @@ import { useRoute } from 'vue-router'
 
 type SlotData = {
     isSelected: true,
-    id: string
+    id: string,
+    users: string[] // all user id's available at this slot
 } | {
     isSelected: false
 }
@@ -37,9 +38,10 @@ function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
 
 function getIsSelected(date: Date): SlotData {
     const schedule = schedules.value?.find(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime());
-    if (schedule) {
-        if (schedule.id) {
-            return { isSelected: true, id: schedule.id }
+    if (schedule && schedule.id) {
+        const users = schedules.value?.filter(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime()).map(schedule => schedule.userId);
+        if (users) {
+            return { isSelected: true, id: schedule.id, users }
         }
     }
     return { isSelected: false }
@@ -70,6 +72,7 @@ watch(
             console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
             schedules.value = await (await server.get(`api/schedule/week/course/${id}`)).data
+            console.log(schedules.value);
             slots.value = getSlots();
 
         } catch (e) {

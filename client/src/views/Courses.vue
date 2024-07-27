@@ -1,28 +1,22 @@
 <template>
-  <div class="flex">
-    <SideBar />
-    <div class="flex-1 p-6 pl-8">
-      <div class="px-4 flex items-center justify-between bg-white">
-        <h2 class="text-3xl font-bold mb-4">Course List</h2>
-        <button
-          class="px-4 py-1 bg-primary text-white font-semibold rounded-full hover:bg-blue-700"
-          @click="addCourse"
-        >
-          Add Course
-        </button>
-      </div>
-      <ul class="divide-y divide-gray-200">
-        <li v-for="course in courses" :key="course.id" class="py-4">
-          <a
-            href="#"
-            class="block hover:bg-gray-100 px-4 py-2 rounded-md transition-colors duration-200 text-medium"
-          >
-            {{ course.courseCode }}: {{ course.courseName }}
-          </a>
-        </li>
-      </ul>
+    <div class="flex">
+        <SideBar />
+        <div class="flex-1 p-6 pl-8">
+            <div class="px-4 flex items-center justify-between bg-white">
+                <h2 class="text-3xl font-bold mb-4">Course List</h2>
+                <button class="px-4 py-1 bg-primary text-white font-semibold rounded-full hover:bg-blue-700" @click="addCourse">Add Course</button>
+            </div>
+            <ul class="divide-y divide-gray-200">
+                <li v-for="course in courses" :key="course.id" class="py-4">
+                    <RouterLink
+                        :to="'/course/' + course.courseCode.replaceAll(whitespace, replaced) + course.courseName.replaceAll(whitespace, replaced)"
+                        class="block hover:bg-gray-100 px-4 py-2 rounded-md transition-colors duration-200 text-medium">
+                        {{ course.courseCode }}: {{ course.courseName }}
+                    </RouterLink>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
   <div
     v-if="isVisible"
     class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
@@ -81,9 +75,14 @@
   </div>
 </template>
 <script>
-import SideBar from "../components/SideBar.vue";
-import axios from "axios";
-import { useUserStore } from "@/store/user";
+import SideBar from "../components/SideBar.vue"
+import axios from 'axios'
+import { useUserStore } from '@/store/user';
+import { RouterLink } from "vue-router";
+
+// because i cant put quotes in the html tag
+const whitespace = " ";
+const replaced = "";
 
 export default {
   components: {
@@ -111,58 +110,61 @@ export default {
     async getCourses() {
       const currentUser = this.userStore.storedUser;
 
-      try {
-        const response = await axios.get(`update/user/${currentUser.username}`);
-        this.courses = response.data.courses;
-      } catch (error) {
-        console.log("Error fetching courses: ", error);
-      }
-    },
-    addCourse() {
-      this.isVisible = true;
-    },
-    async handleSubmit() {
-      const currentUser = this.userStore.storedUser;
-      if (!this.validateForm()) {
-        return;
-      }
-      try {
-        const update = await axios.put(
-          `update/user/course/${currentUser.username}`,
-          {
-            courseCode: this.courseCode,
-            courseName: this.courseName,
-          }
-        );
-        alert("Add Course Successfully");
-        this.getCourses();
-        this.isVisible = false;
-      } catch (error) {
-        console.log("Error updating courses: ", error);
-      }
-    },
-    validateForm() {
-      const formRegex = /^[A-Za-z0-9 ]+$/;
-      var formValidated = true;
-      if (!formRegex.test(this.courseCode)) {
-        this.courseCodeError = "Code can only contain letters and numbers";
-        formValidated = false;
-      } else {
-        this.courseCodeError = "";
-      }
-      if (!(this.course == null) && this.courses.length > 0) {
-        this.courses.forEach((course) => {
-          if (this.courseCode == course.courseCode) {
-            this.courseCodeError = "Course existed!";
-            formValidated = false;
-          }
-        });
-      }
-      return formValidated;
-    },
-    closeModal() {
-      this.isVisible = false;
-    },
-  },
-};
+            try {
+                const response = await axios.get(`update/user/${currentUser.username}`);
+
+                this.courses = response.data.courses;
+            }
+            catch (error) {
+                console.log("Error fetching courses: ", error);
+            }
+        },
+        addCourse() {
+            this.isVisible = true;
+        },
+        async handleSubmit() {
+            const currentUser = this.userStore.getUser;
+            if (!this.validateForm()) {
+                return;
+            }
+            try {
+                const update = await axios.put(`update/user/course/${currentUser.username}`,
+                    {
+                        courseCode: this.courseCode,
+                        courseName: this.courseName
+                    }
+                );
+                alert("Add Course Successfully");
+                this.getCourses();
+                this.isVisible = false;
+            }
+            catch (error) {
+                console.log("Error updating courses: ", error);
+            }
+        },
+        validateForm() {
+            const formRegex = /^[A-Za-z0-9 ]+$/;
+            var formValidated = true;
+            if(!(formRegex.test(this.courseCode))) {
+                this.courseCodeError = "Code can only contain letters and numbers";
+                formValidated = false;
+            }
+            else {
+                this.courseCodeError = "";
+            }
+            if (!(this.course == null) && (this.courses.length > 0)) {
+                this.courses.forEach(course => {
+                    if (this.courseCode == course.courseCode) {
+                        this.courseCodeError = "Course existed!";
+                        formValidated = false;
+                    }
+                });
+            }
+            return formValidated;
+        },
+        closeModal() {
+            this.isVisible = false;
+        }
+    }
+}
 </script>
