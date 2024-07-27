@@ -119,7 +119,6 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         this.loginFail = true;
-        alert("Incorrect Username and/or Password!");
       }
     },
   },
