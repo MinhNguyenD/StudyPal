@@ -284,7 +284,7 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         if (error.response && error.response.data) {
-          for (const e in error.response.data) {
+          for (const e of error.response.data) {
             if (e.code === "DuplicateUserName") {
               this.errors.username = e.description;
             }

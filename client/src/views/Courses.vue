@@ -17,6 +17,7 @@
             </ul>
         </div>
     </div>
+  </div>
   <div
     v-if="isVisible"
     class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
