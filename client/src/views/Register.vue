@@ -283,7 +283,11 @@ export default {
         );
         this.$router.push("/dashboard");
       } catch (error) {
-        alert("Register failed!");
+        if (error.response && error.response.data) {
+          if (error.response.data[0].code) {
+            this.errors.username = error.response.data[0].description;
+          }
+        }
       }
     },
 
