@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { server } from '@/instance';
 import { days, getWeekStart, hours } from '@/lib/utils';
-import authHeader from '@/services/authHeader';
+import { useUserStore } from '@/store/user';
+import { jwtDecode } from 'jwt-decode';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -15,8 +16,10 @@ type SlotData = {
 
 const route = useRoute()
 const schedules = ref<Schedule[]>();
+const isEditable = ref<boolean>(false);
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const slots = ref<Map<string, { start: Date, data: SlotData }[]>>(getSlots())
+
 
 function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     const start = new Date(getWeekStart().getTime() + (8 * hours));
@@ -36,10 +39,22 @@ function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     return slots;
 }
 
+function getUserId() {
+    const user = useUserStore();
+    if (user.storedUser) {
+        const id = jwtDecode(user.storedUser.token);
+
+        return id.sub;
+    }
+
+}
+
 function getIsSelected(date: Date): SlotData {
     const schedule = schedules.value?.find(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime());
     if (schedule && schedule.id) {
-        const users = schedules.value?.filter(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime()).map(schedule => schedule.userId);
+        const users = schedules.value?.filter(i =>
+            i.timeFrom <= date.getTime() && i.timeTo > date.getTime()
+        ).map(schedule => schedule.userId);
         if (users) {
             return { isSelected: true, id: schedule.id, users }
         }
@@ -47,36 +62,63 @@ function getIsSelected(date: Date): SlotData {
     return { isSelected: false }
 }
 
-async function createSlot(slot: Date, data: SlotData) {
-    console.log(data);
+async function createSlot(date: Date, data: SlotData) {
     if (!data.isSelected) {
         await server.post("api/schedule", {
             schedule: [{
-                timeFrom: slot.getTime(),
-                timeTo: slot.getTime() + (1 * hours)
+                timeFrom: date.getTime(),
+                timeTo: date.getTime() + (1 * hours)
             }],
             courseId: route.params.id
         });
     } else {
         await server.delete(`api/schedule/delete/${data.id}`);
     }
+}
 
-    schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
+async function revalidate(courseId: string) {
+    const currentUser = getUserId();
+    if (isEditable.value) {
+        schedules.value = await (await server.get(`api/schedule/week/user/${currentUser}/course/${courseId}`)).data;
+        // schedules.value = schedules.value?.filter(schedule => schedule.userId === currentUser)
+    } else {
+        schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
+    }
     slots.value = getSlots();
+}
+
+async function handleClick(slot: Date, data: SlotData) {
+    console.log(data);
+    if (isEditable.value) {
+        await createSlot(slot, data);
+    } else {
+        // handle getting user id's
+        if (data.isSelected) {
+            console.log(data.users);
+        }
+    }
+
+    await revalidate(route.params.id as string);
+}
+
+async function handleEditable() {
+    isEditable.value = !isEditable.value;
+    await revalidate(route.params.id as string);
 }
 
 watch(
     () => route.params.id,
     async (id) => {
         try {
-            console.log("here", authHeader());
             // TODO: change url here depending on what view we are in 
-            const response = await server.get(`api/schedule/week/course/${id}`);
-            if (response.status === 404) {
-                alert("Course Not Found");
-            }
-            schedules.value = await response.data;
-            console.log(schedules.value);
+
+            await revalidate(id as string);
+            // if (response.status === 404) {
+            //     alert("Course Not Found");
+            // }
+            // schedules.value = await response.data;
+            console.log(getUserId());
+            console.log(schedules.value?.map(i => i.userId));
             slots.value = getSlots();
 
         } catch (e) {
@@ -90,11 +132,12 @@ watch(
 </script>
 <template>
     <div style="display: flex; justify-content: space-between;">
+        <input type="checkbox" name="editable" id="editable" @change="() => handleEditable()">
         <div class="parent">
             <div v-for="slot in slots">
                 <h5>{{ slot[0] }}</h5>
                 <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
-                    @click="() => createSlot(start, data)">
+                    @click="() => handleClick(start, data)">
                     <h6 @click="() => console.log(start, start.getTime())"
                         :class="[data.isSelected ? 'bg-primary' : 'time-slot']">{{ start.toLocaleString(undefined, {
                             hour: "2-digit",

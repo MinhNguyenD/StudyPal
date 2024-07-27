@@ -85,6 +85,26 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         return Ok(results.ToList());
     }
 
+    [HttpGet("week/user/{userId}/course/{courseId}")]
+    public async Task<IActionResult> GetCurrentWeekByCourse(string courseId, Guid userId) {
+        if (!ModelState.IsValid) {
+            return BadRequest(ModelState);
+        }
+        var weekStart = DateTime.Today.AddDays(-(int)DateTime.Now.DayOfWeek);
+
+        var theWeeknd = weekStart.AddDays(7);
+
+        var results = await _schedules.FindAsync(elem =>
+                elem.UserId == userId &&
+                elem.CourseId == courseId &&
+                elem.TimeFrom >= ((DateTimeOffset)weekStart).ToUnixTimeMilliseconds() &&
+                elem.TimeTo <=
+                ((DateTimeOffset)theWeeknd).ToUnixTimeMilliseconds() // get all timeframes clamped to this week
+        );
+
+        return Ok(results.ToList());
+    }
+    
     [HttpDelete("delete/{scheduleId}")]
     public async Task<IActionResult> Delete(string scheduleId) {
         if (!ModelState.IsValid) {
