@@ -48,7 +48,6 @@ import SideBar from "../components/SideBar.vue"
 import axios from 'axios'
 import { useUserStore } from '@/store/user';
 
-
 export default {
     components: {
         SideBar,
@@ -116,7 +115,7 @@ export default {
             else {
                 this.courseCodeError = "";
             }
-            if (this.courses.length > 0) {
+            if (!(this.course == null) && (this.courses.length > 0)) {
                 this.courses.forEach(course => {
                     if (this.courseCode == course.courseCode) {
                         this.courseCodeError = "Course existed!";
