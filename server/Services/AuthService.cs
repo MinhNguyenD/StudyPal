@@ -10,6 +10,14 @@ public class AuthService
     private readonly SignInManager<User> _signinManager;
 
     private readonly JWTTokenService _tokenService;
+
+    /// <summary>
+    /// Constructor for dependency injection
+    /// </summary>
+    /// <param name="userManager">UserManager instance</param>
+    /// <param name="roleManager">RoleManager instance</param>
+    /// <param name="signInManager">SignInManager instance</param>
+    /// <param name="tokenService">JWTTokenService instance</param>
     public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, JWTTokenService tokenService)
     {
         _userManager = userManager;
@@ -18,9 +26,16 @@ public class AuthService
         _tokenService = tokenService;
     }
 
+    /// <summary>
+    /// Registers a new user.
+    /// </summary>
+    /// <param name="registerRequestDto">Registration request data</param>
+    /// <returns>Authentication response containing success status and user info</returns>
     public async Task<AuthResponseDto> Register(RegisterRequestDto registerRequestDto)
     {
         var errors = new List<object>();
+        
+        // Check if username is already taken
         var existingUsername = await _userManager.FindByNameAsync(registerRequestDto.Username);
         if (existingUsername != null)
         {
@@ -30,6 +45,7 @@ public class AuthService
                 });
         }
 
+        // Check if email is already registered
         var existingUser = await _userManager.FindByEmailAsync(registerRequestDto.Email);
         if (existingUser != null)
         {
@@ -39,6 +55,7 @@ public class AuthService
                 });
         }
 
+        // If there are any errors, return them
         if(errors.Count > 0){
             return new AuthResponseDto
             {
@@ -87,6 +104,12 @@ public class AuthService
         };
     }
 
+    /// <summary>
+    /// Adds roles to the specified user.
+    /// </summary>
+    /// <param name="user">User to add roles to</param>
+    /// <param name="roles">List of roles to add</param>
+    /// <returns>IdentityResult indicating success or failure</returns>
     private async Task<IdentityResult> AddRolesToUser(User user, List<string> roles)
     {
         foreach (string role in roles)
@@ -107,6 +130,12 @@ public class AuthService
         }
         return IdentityResult.Success;
     }
+
+    /// <summary>
+    /// Logs in a user.
+    /// </summary>
+    /// <param name="loginRequestDto">Login request data</param>
+    /// <returns>Authentication response containing success status and user info</returns>
     public async Task<AuthResponseDto> Login(LoginRequestDto loginRequestDto)
     {
         var user = await _userManager.FindByEmailAsync(loginRequestDto.Email);

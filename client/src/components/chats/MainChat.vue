@@ -205,10 +205,10 @@ export default defineComponent({
         }
       });
     },
-    openChatWindow(username: string) {
+    openChatWindow(value: {username: string}) {
       const conversation: Conversation = {
-        id: username,
-        name: username,
+        id: value.username,
+        name: value.username,
         messages: [],
         type: MessageType.UserMessage,
       };
@@ -226,8 +226,6 @@ export default defineComponent({
   },
   async mounted() {
     this.user = this.userStore.storedUser;
-
-    console.log(this.user);
     if (this.user?.username != null) {
       this.currentUserId = this.user.username;
       this.fetchAllMessages();
