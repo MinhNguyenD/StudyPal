@@ -26,7 +26,7 @@ public class AuthService
         {
             errors.Add(new {
                     Code = "DuplicateUserName",
-                    Description = $"Email '{registerRequestDto.Email}' is already taken"
+                    Description = $"Username '{registerRequestDto.Username}' is already taken"
                 });
         }
 
