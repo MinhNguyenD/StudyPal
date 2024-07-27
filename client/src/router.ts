@@ -10,6 +10,7 @@ import Course from './components/course/Course.vue'
 import UpdateProfile from "./views/UpdateProfile.vue"
 import UpdateSecurity from "./views/UpdateSecurity.vue"
 import CourseList from "./views/Courses.vue"
+import MainChat from './components/chats/MainChat.vue'
 
 
 const routes = [
@@ -36,6 +37,9 @@ const routes = [
     },
     {
       path: '/profile', component: UpdateProfile
+    },
+    {
+      path: '/chats', component: MainChat
     },
     {
       path: '/security', component: UpdateSecurity
