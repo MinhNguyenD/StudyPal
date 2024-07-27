@@ -54,7 +54,7 @@ const router = createRouter({
     console.log(to)
     // redirect to login page if not logged in and trying to access a restricted page
     const publicPages = ['/login', '/faq', '/register', '/contact' ,'/', '/course/csci3120']; // temp until redirect is fixed
-    const authRequired = !publicPages.includes(to.path);
+    const authRequired = !publicPages.includes(to.path) && !to.path.match(/\/course\/.*/);
     const auth = useUserStore();
 
     if (authRequired && !auth.user) {
