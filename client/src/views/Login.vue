@@ -110,12 +110,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
-        const response = await axios.post("auth/login", {
-          email: this.email,
-          password: this.password,
-        });
-        localStorage.setItem("token", response.data.token);
-        this.userStore.login(response.data);
+        await this.userStore.login(this.email, this.password);
         this.$router.push("/dashboard");
       } catch (error) {
         this.loginFail = true;
