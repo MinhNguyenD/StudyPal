@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { server } from '@/instance';
 import { days, getWeekStart, hours } from '@/lib/utils';
-import { useUserStore } from '@/store/user';
-import { jwtDecode } from 'jwt-decode';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -39,16 +37,6 @@ function getSlots(): Map<string, { start: Date, data: SlotData }[]> {
     return slots;
 }
 
-function getUserId() {
-    const user = useUserStore();
-    if (user.storedUser) {
-        const id = jwtDecode(user.storedUser.token);
-
-        return id.sub;
-    }
-
-}
-
 function getIsSelected(date: Date): SlotData {
     const schedule = schedules.value?.find(i => i.timeFrom <= date.getTime() && i.timeTo > date.getTime());
     if (schedule && schedule.id) {
@@ -77,9 +65,8 @@ async function createSlot(date: Date, data: SlotData) {
 }
 
 async function revalidate(courseId: string) {
-    const currentUser = getUserId();
     if (isEditable.value) {
-        schedules.value = await (await server.get(`api/schedule/week/user/${currentUser}/course/${courseId}`)).data;
+        schedules.value = await (await server.get(`api/schedule/week/user/course/${courseId}`)).data;
     } else {
         schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
     }
@@ -111,7 +98,6 @@ watch(
         try {
             // TODO: change url here depending on what view we are in 
             await revalidate(id as string);
-            console.log(getUserId());
             console.log(schedules.value?.map(i => i.userId));
             slots.value = getSlots();
 
