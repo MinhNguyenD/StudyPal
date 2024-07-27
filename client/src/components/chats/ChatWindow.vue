@@ -3,11 +3,11 @@
     <div v-if="selectedConversation?.id" class="flex-1 flex flex-col">
       <div class="flex items-center p-4 border-b border-gray-300 bg-zinc-300 rounded-tr-2xl">
         <div class="w-10 h-10 rounded-full bg-zinc-500 text-white flex items-center justify-center mr-3">
-          {{ selectedConversation.id.toUpperCase()[0] }}
+          {{ selectedConversation.id.toUpperCase()[0] + selectedConversation.id.toUpperCase()[1] }}
         </div>
         <div>
-          <p class="text-gray-800 font-bold">{{ selectedConversation.id }}</p>
-          <p class="text-gray-600">{{ selectedConversation.name }}</p>
+          <p class="text-gray-800 font-bold">{{ selectedConversation.name }}</p>
+          <p class="text-gray-600">{{ selectedConversation.id }}</p>
         </div>
       </div>
 

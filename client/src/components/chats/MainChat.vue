@@ -20,8 +20,6 @@ import SideBar from '../SideBar.vue';
 import { useUserStore } from '@/store/user';
 import { User } from '@/models/user';
 
-axios.defaults.baseURL = "http://localhost:5267/api";
-
 enum MessageType {
   UserMessage = 'UserMessage',
   GroupMessage = 'GroupMessage'
@@ -69,7 +67,7 @@ export default defineComponent({
   methods: {
     async fetchAllMessages() {
       try {
-        const response = await axios.get('ChatMessage/messages/' + this.currentUserId);
+        const response = await axios.get('api/ChatMessage/messages/' + this.currentUserId);
         this.messages = response.data;
         this.conversations = this.getUniqueUserIds();
         if (this.selectedConversation?.id) {
@@ -148,7 +146,7 @@ export default defineComponent({
       };
 
       try {
-        await axios.post('/chat/send', message);
+        await axios.post('api/ChatMessage/send', message);
         this.selectedConversation!.messages.push({
           ...message,
           senderId: this.currentUserId
@@ -193,8 +191,6 @@ export default defineComponent({
       this.fetchAllMessages();
       this.scrollToEnd();
       this.startMessageRefresh();
-
-      console.log(this.messages);
     }
   },
   beforeUnmount() {

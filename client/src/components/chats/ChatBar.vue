@@ -10,7 +10,7 @@
         class="flex items-center p-3 border-b border-gray-300 cursor-pointer hover:bg-gray-100"
         :class="{ 'bg-blue-100': conversation.id === selectedConversation?.id }">
         <div class="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center mr-3">
-          {{ conversation.id.toUpperCase()[0] }}
+          {{ conversation.id.toUpperCase()[0] + conversation.id.toUpperCase()[1] }}
         </div>
         <div class="w-8/12">
           <p :class="{ 'font-bold': conversation.id === selectedConversation?.id }" class="text-gray-800">
