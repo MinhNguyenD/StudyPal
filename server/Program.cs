@@ -48,6 +48,21 @@ builder.Services.ConfigureMongoDbIdentity<User, Role, Guid>(mongoDbIdentityConfi
 builder.Services.AddScoped<JWTTokenService>();
 builder.Services.AddScoped<AuthService>();
 
+builder.Services.AddSingleton(sp =>
+{
+    var mongoClient = sp.GetRequiredService<IMongoClient>();
+    var database = mongoClient.GetDatabase(builder.Configuration["MongoDB:DatabaseName"]);
+    var groupChatService = sp.GetRequiredService<GroupChatService>();
+    return new ChatMessageService(database, groupChatService);
+});
+
+builder.Services.AddSingleton(sp =>
+{
+    var mongoClient = sp.GetRequiredService<IMongoClient>();
+    var database = mongoClient.GetDatabase(builder.Configuration["MongoDB:DatabaseName"]);
+    return new GroupChatService(database);
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
