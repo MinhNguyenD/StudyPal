@@ -62,6 +62,13 @@ builder.Services.AddSingleton(sp =>
     return new GroupChatService(database);
 });
 
+builder.Services.AddSingleton(sp =>
+{
+    var mongoClient = sp.GetRequiredService<IMongoClient>();
+    var database = mongoClient.GetDatabase(builder.Configuration["MongoDB:DatabaseName"]);
+    return new UserProfileService(database);
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
