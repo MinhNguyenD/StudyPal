@@ -146,6 +146,7 @@ export default {
         return updatePassword.data;
       } catch (error) {
         console.log("Error updating password: ", error);
+        alert("Change password failed. Please check if you have entered the correct password.");
       }
     },
     validateForm() {
