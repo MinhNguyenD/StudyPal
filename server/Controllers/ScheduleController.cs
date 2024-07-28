@@ -9,13 +9,15 @@ namespace server.Controllers;
 [ApiController]
 [Route("api/schedule")]
 public class ScheduleController(IMongoClient client) : ControllerBase {
-    private readonly IMongoCollection<Schedule> _schedules = client.GetDatabase("StudyPal").GetCollection<Schedule>("schedules");
+    private readonly IMongoCollection<Schedule> _schedules =
+        client.GetDatabase("StudyPal").GetCollection<Schedule>("schedules");
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ScheduleRequestDto scheduleRequest) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
+
         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         List<Schedule> parsed = scheduleRequest.Schedule.Select(elem => new Schedule {
@@ -45,69 +47,76 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
     /// get the timeframes for the current week for given user
     /// </summary>
     /// <returns>list of Schedules</returns>
-    [HttpGet("week/{id}")]
-    public async Task<IActionResult> GetCurrentWeek(Guid id) {
+    [HttpGet("week/{id}/{start}/{end}")]
+    public async Task<IActionResult> GetCurrentWeek(Guid id, long start, long end) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
 
-        var weekStart = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+        var weekStart = new DateTime(start);
+        // var weekStart = DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
 
-        var theWeeknd = weekStart.AddDays(7).AddSeconds(-1);
-
+        // var theWeeknd = weekStart.AddDays(7).AddSeconds(-1);
+        var theWeeknd = new DateTime(end);
         var results = await _schedules.FindAsync(elem =>
                 elem.UserId == id &&
-                elem.TimeFrom >= ((DateTimeOffset)weekStart).ToUnixTimeMilliseconds() &&
+                elem.TimeFrom >= start &&
                 elem.TimeTo <=
-                ((DateTimeOffset)theWeeknd).ToUnixTimeMilliseconds() // get all timeframes clamped to this week
+                end // get all timeframes clamped to this week
         );
 
         return Ok(results.ToList());
     }
 
-    [HttpGet("week/course/{courseId}")]
-    public async Task<IActionResult> GetCurrentWeekByCourse(string courseId) {
+    [HttpGet("week/course/{courseId}/{start}/{end}")]
+    public async Task<IActionResult> GetCurrentWeekByCourse(string courseId, long start, long end) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
 
-        var weekStart = DateTime.Today.AddDays(-(int)DateTime.Now.DayOfWeek);
+        // var week = new DateTime(start);
+        // var weekStart = new DateTime(start);
+        // var weekStart = DateTime.Now.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
 
-        var theWeeknd = weekStart.AddDays(7);
+        // var theWeeknd = new DateTime(end);
 
         var results = await _schedules.FindAsync(elem =>
                 elem.CourseId == courseId &&
-                elem.TimeFrom >= ((DateTimeOffset)weekStart).ToUnixTimeMilliseconds() &&
+                elem.TimeFrom >= start &&
                 elem.TimeTo <=
-                ((DateTimeOffset)theWeeknd).ToUnixTimeMilliseconds() // get all timeframes clamped to this week
+                end // get all timeframes clamped to this week
         );
 
         return Ok(results.ToList());
     }
 
-    [HttpGet("week/user/course/{courseId}")]
-    public async Task<IActionResult> GetCurrentWeekByUser(string courseId) {
+    [HttpGet("week/user/course/{courseId}/{start}/{end}")]
+    public async Task<IActionResult> GetCurrentWeekByUser(string courseId, long start, long end) {
         if (!ModelState.IsValid) {
             return BadRequest(ModelState);
         }
-        var weekStart = DateTime.Today.AddDays(-(int)DateTime.Now.DayOfWeek);
 
-        var theWeeknd = weekStart.AddDays(7);
+        // var week = new DateTime(start);
+        var weekStart = new DateTime(start);
+        // var weekStart = DateTime.Now.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+
+        var theWeeknd = new DateTime(end);
         var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         if (userId == null) {
             return Forbid();
         }
+
         var results = await _schedules.FindAsync(elem =>
                 elem.UserId == Guid.Parse(userId) &&
                 elem.CourseId == courseId &&
-                elem.TimeFrom >= ((DateTimeOffset)weekStart).ToUnixTimeMilliseconds() &&
+                elem.TimeFrom >= start &&
                 elem.TimeTo <=
-                ((DateTimeOffset)theWeeknd).ToUnixTimeMilliseconds() // get all timeframes clamped to this week
+                end // get all timeframes clamped to this week
         );
 
         return Ok(results.ToList());
     }
-    
+
     [HttpDelete("delete/{scheduleId}")]
     public async Task<IActionResult> Delete(string scheduleId) {
         if (!ModelState.IsValid) {

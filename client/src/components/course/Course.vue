@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { server } from '@/instance';
-import { days, getWeekStart, hours } from '@/lib/utils';
+import { days, getTheWeeknd, getWeekStart, hours } from '@/lib/utils';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -66,9 +66,9 @@ async function createSlot(date: Date, data: SlotData) {
 
 async function revalidate(courseId: string) {
     if (isEditable.value) {
-        schedules.value = await (await server.get(`api/schedule/week/user/course/${courseId}`)).data;
+        schedules.value = await (await server.get(`api/schedule/week/user/course/${courseId}/${getWeekStart().getTime()}/${getTheWeeknd().getTime()}`)).data;
     } else {
-        schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}`)).data;
+        schedules.value = await (await server.get(`api/schedule/week/course/${route.params.id}/${getWeekStart().getTime()}/${getTheWeeknd().getTime()}`)).data;
     }
     slots.value = getSlots();
 }
