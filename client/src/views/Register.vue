@@ -299,7 +299,7 @@ export default {
     },
     async createUserProfile() {
       try {
-        await axios.post("api/UserProfile/profiles", {
+        await axios.post("api/UserProfile/add", {
           firstname: this.form.firstName, 
           lastname: this.form.lastName,
           username: this.form.username,
