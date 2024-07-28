@@ -3,20 +3,10 @@
     <SideBar />
 
     <div class="flex w-full flex-1 p-10 mainWindow">
-      <ChatBar
-        :conversations="conversations"
-        :selectedConversation="selectedConversation"
-        :currentUserId="currentUserId"
-        @selectConversation="selectConversation"
-        @open-chat="openChatWindow"
-      />
-      <ChatWindow
-        :selectedConversation="selectedConversation"
-        :currentUserId="currentUserId"
-        :newMessage="newMessage"
-        @sendMessage="sendMessage"
-        @updateNewMessage="updateNewMessage"
-      />
+      <ChatBar :conversations="conversations" :selectedConversation="selectedConversation"
+        :currentUserId="currentUserId" @selectConversation="selectConversation" @open-chat="openChatWindow" />
+      <ChatWindow :selectedConversation="selectedConversation" :currentUserId="currentUserId" :newMessage="newMessage"
+        @sendMessage="sendMessage" @updateNewMessage="updateNewMessage" />
     </div>
   </div>
 </template>
@@ -29,26 +19,7 @@ import ChatBar from "./ChatBar.vue";
 import SideBar from "../SideBar.vue";
 import { useUserStore } from "@/store/user";
 import { User } from "@/models/user";
-
-enum MessageType {
-  UserMessage = "UserMessage",
-  GroupMessage = "GroupMessage",
-}
-
-interface Message {
-  senderId: string;
-  receiverId: string;
-  message: string;
-  time: string;
-  type: MessageType;
-}
-
-interface Conversation {
-  id: string;
-  name: string;
-  messages: Message[];
-  type: MessageType;
-}
+import { Conversation, Message, MessageType } from "@/models/Conversation";
 
 export default defineComponent({
   components: {
@@ -205,7 +176,7 @@ export default defineComponent({
         }
       });
     },
-    openChatWindow(value: {username: string}) {
+    openChatWindow(value: { username: string }) {
       const conversation: Conversation = {
         id: value.username,
         name: value.username,

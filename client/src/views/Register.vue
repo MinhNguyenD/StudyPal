@@ -281,6 +281,8 @@ export default {
           this.form.checkedRoles,
           this.form.password
         );
+
+        this.createUserProfile();
         this.$router.push("/dashboard");
       } catch (error) {
         if (error.response && error.response.data) {
@@ -293,6 +295,18 @@ export default {
             }
           }
         }
+      }
+    },
+    async createUserProfile() {
+      try {
+        await axios.post("api/UserProfile/profiles", {
+          firstname: this.form.firstName, 
+          lastname: this.form.lastName,
+          username: this.form.username,
+          email: this.form.email
+        });
+      } catch (error) {
+        console.log(error);
       }
     },
 
