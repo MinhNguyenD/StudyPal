@@ -3,10 +3,20 @@
     <SideBar />
 
     <div class="flex w-full flex-1 p-10 mainWindow">
-      <ChatBar :conversations="conversations" :selectedConversation="selectedConversation"
-        :currentUserId="currentUserId" @selectConversation="selectConversation" @open-chat="openChatWindow" />
-      <ChatWindow :selectedConversation="selectedConversation" :currentUserId="currentUserId" :newMessage="newMessage"
-        @sendMessage="sendMessage" @updateNewMessage="updateNewMessage" />
+      <ChatBar
+        :conversations="conversations"
+        :selectedConversation="selectedConversation"
+        :currentUserId="currentUserId"
+        @selectConversation="selectConversation"
+        @open-chat="openChatWindow"
+      />
+      <ChatWindow
+        :selectedConversation="selectedConversation"
+        :currentUserId="currentUserId"
+        :newMessage="newMessage"
+        @sendMessage="sendMessage"
+        @updateNewMessage="updateNewMessage"
+      />
     </div>
   </div>
 </template>
@@ -176,7 +186,9 @@ export default defineComponent({
         }
       });
     },
-    openChatWindow(value: { username: string }) {
+    openChatWindow(value: {username: string}) {
+
+      console.log(value);
       const conversation: Conversation = {
         id: value.username,
         name: value.username,

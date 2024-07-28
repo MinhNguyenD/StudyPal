@@ -57,18 +57,20 @@ export default {
             );
         },
         openChatWindow(user) {
-
             const name = user.split(" : ")[0];
+            console.log(user)
+            console.log(name)
             this.profiles.map(profile => {
-                if (profile.userName === name) {
-                    this.$emit('open-chat', { username: profile.userName });
+                if (profile.username === name) {
+                    console.log(profile)
+                    this.$emit('open-chat', { username: profile.username });
                     this.isSearchBoxOpen = false;
                 }
             });
         },
         async fetchAllUsers() {
             try {
-                const response = await axios.get('update/user');
+                const response = await axios.get('api/Userprofile/profiles/not/' + this.currentUserId);
                 this.profiles = response.data;
                 this.sortUsernames();
             } catch (error) {
@@ -76,7 +78,7 @@ export default {
             }
         },
         sortUsernames() {
-            this.usernames = this.profiles.map(user => `${user.userName} : ${user.firstName} ${user.lastName}`);
+            this.usernames = this.profiles.map(user => `${user.username} : ${user.firstName} ${user.lastName}`);
         }
     }
 };
