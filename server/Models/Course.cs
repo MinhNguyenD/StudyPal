@@ -6,7 +6,6 @@ namespace server.Models;
 public class Course
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId? Id { get; set; }
 
     public string CourseCode { get; set; }
