@@ -4,7 +4,8 @@
       <section class="flex flex-col md:flex-row text-center md:text-left mb-16 p-12 items-center text-black px-16">
         <div class="md:w-1/2">
           <h1 class="font-bold mb-8">Find your <span class="text-blue">StudyPal</span> within a minute</h1>
-          <h6 class="mb-8">Unlock your full potential, with the power of teamwork and expert guidance. Join us to elevate your learning through collaboration.</h6>
+          <h6 class="mb-8">Unlock your full potential, with the power of teamwork and expert guidance. Join us to
+            elevate your learning through collaboration.</h6>
           <button class="bg-blue text-white px-6 py-3 rounded hover:bg-dark-blue">Get Started</button>
         </div>
         <div class="md:w-1/2 mt-8 md:mt-0">
@@ -46,11 +47,13 @@
             </div>
             <div>
               <h3 class="font-bold">Enhance Productivity</h3>
-              <h6>Studying with others helps boost motivation and productivity to stay on track of your learning goals.</h6>
+              <h6>Studying with others helps boost motivation and productivity to stay on track of your learning goals.
+              </h6>
             </div>
             <div>
               <h3 class="font-bold">Networking Opportunities</h3>
-              <h6>Connect with like-minded individuals, build relationships, and expand your academic and professional network.</h6>
+              <h6>Connect with like-minded individuals, build relationships, and expand your academic and professional
+                network.</h6>
             </div>
           </div>
         </div>
