@@ -9,11 +9,12 @@ export const days = 24 * hours;
 
 // returns a timestamp to 12 am of today
 export function getToday() {
-  return new Date(new Date().getTime() -
-  ((new Date().getHours() * hours) +
-  (new Date().getMinutes() * mins) +
-  (new Date().getSeconds() * secs) +
-  (new Date().getMilliseconds())))
+  const date = new Date();
+  return new Date(date.getTime() -
+  ((date.getHours() * hours) +
+  (date.getMinutes() * mins) +
+  (date.getSeconds() * secs) +
+  (date.getMilliseconds())))
 }
 
 // always returns a timestamp to the last sunday

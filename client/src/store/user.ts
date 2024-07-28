@@ -38,6 +38,7 @@ export const useUserStore = defineStore("user", {
         password: password,
       });
       this.user = response.data;
+      console.log(this.user);
       this.token = response.data.token;
       localStorage.setItem("token", this.token!);
       localStorage.setItem("user", JSON.stringify(this.user));
