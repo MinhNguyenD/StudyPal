@@ -114,6 +114,7 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         this.loginFail = true;
+        console.log(error);
       }
     },
   },

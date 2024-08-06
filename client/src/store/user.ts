@@ -9,7 +9,10 @@ interface AuthState {
 }
 
 export const useUserStore = defineStore("user", {
-  state: (): AuthState => ({ user: null, token: null }),
+  state: (): AuthState => ({
+    user: null,
+    token: null,
+  }),
   actions: {
     async register(
       firstName: string,
@@ -19,36 +22,47 @@ export const useUserStore = defineStore("user", {
       checkedRoles: Array<string>,
       password: string
     ) {
-      const response = await axios.post("auth/register", {
-        firstname: firstName,
-        lastname: lastName,
-        username: username,
-        email: email,
-        roles: checkedRoles,
-        password: password,
-      });
-      this.user = response.data;
-      this.token = response.data.token;
-      localStorage.setItem("token", this.token!);
-      localStorage.setItem("user", JSON.stringify(this.user));
+      try {
+        const response = await axios.post("auth/register", {
+          firstname: firstName,
+          lastname: lastName,
+          username: username,
+          email: email,
+          roles: checkedRoles,
+          password: password,
+        });
+        this.user = response.data;
+        this.token = response.data.token;
+        localStorage.setItem("token", this.token!);
+        localStorage.setItem("user", JSON.stringify(this.user));
+        axios.defaults.headers.common["Authorization"] = "Bearer " + this.token;
+      } catch (error) {
+        throw error;
+      }
     },
     async login(email: string, password: string) {
-      const response = await axios.post("auth/login", {
-        email: email,
-        password: password,
-      });
-      this.user = response.data;
-      console.log(this.user);
-      this.token = response.data.token;
-      localStorage.setItem("token", this.token!);
-      localStorage.setItem("user", JSON.stringify(this.user));
+      try {
+        const response = await axios.post("auth/login", {
+          email: email,
+          password: password,
+        });
+        this.user = response.data;
+        console.log(this.user);
+        this.token = response.data.token;
+        localStorage.setItem("token", this.token!);
+        localStorage.setItem("user", JSON.stringify(this.user));
+        axios.defaults.headers.common["Authorization"] = "Bearer " + this.token;
+      } catch (error) {
+        throw error;
+      }
     },
     logout() {
+      router.push("/login");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       this.user = null;
       this.token = null;
-      router.push("/login");
+      delete axios.defaults.headers.common["Authorization"];
     },
   },
   getters: {
