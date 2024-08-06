@@ -2,7 +2,7 @@
   <div class="flex ml-64">
     <SideBar />
     <!-- Main content -->
-    <div class="flex-1 p-10">
+    <div v-if="userStore.storedUser" class="flex-1 p-10">
       <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
       <div class="flex items-center">
         <div class="relative">

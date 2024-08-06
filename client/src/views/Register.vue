@@ -300,10 +300,10 @@ export default {
     async createUserProfile() {
       try {
         await axios.post("api/UserProfile/add", {
-          firstname: this.form.firstName, 
+          firstname: this.form.firstName,
           lastname: this.form.lastName,
           username: this.form.username,
-          email: this.form.email
+          email: this.form.email,
         });
       } catch (error) {
         console.log(error);
