@@ -3,20 +3,10 @@
     <SideBar />
 
     <div class="flex w-full flex-1 p-10 mainWindow">
-      <ChatBar
-        :conversations="conversations"
-        :selectedConversation="selectedConversation"
-        :currentUserId="currentUserId"
-        @selectConversation="selectConversation"
-        @open-chat="openChatWindow"
-      />
-      <ChatWindow
-        :selectedConversation="selectedConversation"
-        :currentUserId="currentUserId"
-        :newMessage="newMessage"
-        @sendMessage="sendMessage"
-        @updateNewMessage="updateNewMessage"
-      />
+      <ChatBar :conversations="conversations" :selectedConversation="selectedConversation"
+        :currentUserId="currentUserId" @selectConversation="selectConversation" @open-chat="openChatWindow" />
+      <ChatWindow :selectedConversation="selectedConversation" :currentUserId="currentUserId" :newMessage="newMessage"
+        @sendMessage="sendMessage" @updateNewMessage="updateNewMessage" />
     </div>
   </div>
 </template>
@@ -28,7 +18,7 @@ import ChatWindow from "./ChatWindow.vue";
 import ChatBar from "./ChatBar.vue";
 import SideBar from "../SideBar.vue";
 import { useUserStore } from "@/store/user";
-import { User } from "@/models/user";
+import { User, UserProfile } from "@/models/user";
 import { Conversation, Message, MessageType } from "@/models/Conversation";
 
 export default defineComponent({
@@ -50,6 +40,7 @@ export default defineComponent({
       newMessage: "",
       messages: [] as Message[],
       conversations: [] as Conversation[],
+      profiles: [] as UserProfile[],
       selectedConversation: null as Conversation | null,
       refreshInterval: null as ReturnType<typeof setInterval> | null,
       email: this.$route.query.email || "",
@@ -106,18 +97,19 @@ export default defineComponent({
 
       return userArray.map((user) => ({
         id: user.id,
-        name: this.getConversationName(user.id),
+        firstname: this.getConversation(user.id)?.firstName,
+        lastname: this.getConversation(user.id)?.lastName,
         messages: this.filterMessagesBySelectedUser(user.id),
-        type: user.id.startsWith("group")
+        type: user.id.includes("group")
           ? MessageType.GroupMessage
           : MessageType.UserMessage,
       }));
     },
-    getConversationName(userId: string): string {
-      const user = this.conversations.find(
-        (conversation) => conversation.id === userId
+    getConversation(userId: string) {
+      const user = this.profiles.find(
+        (conversation) => conversation.username === userId
       );
-      return user ? user.name || userId : userId;
+      return user;
     },
     getLastMessage(userId: string): Message | {} {
       const filteredMessages = this.messages.filter(
@@ -134,10 +126,19 @@ export default defineComponent({
         )[0] || {}
       );
     },
+    async fetchAllUsers() {
+      try {
+        const response = await axios.get('api/Userprofile/profiles/');
+        this.profiles = response.data;
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
+      }
+    },
     selectConversation(conversation: Conversation) {
       this.selectedConversation = {
         id: conversation.id,
-        name: conversation.name,
+        firstname: conversation.firstname,
+        lastname: conversation.lastname,
         messages: this.filterMessagesBySelectedUser(conversation.id),
         type: conversation.type,
       };
@@ -171,6 +172,7 @@ export default defineComponent({
         });
         this.newMessage = "";
         this.scrollToEnd();
+        this.fetchAllMessages();
       } catch (error) {
         console.log(error);
       }
@@ -186,14 +188,18 @@ export default defineComponent({
         }
       });
     },
-    openChatWindow(value: {username: string}) {
+    openChatWindow(value: { username: string }) {
 
-      console.log(value);
+      const user = this.getConversation(value.username);
+
       const conversation: Conversation = {
         id: value.username,
-        name: value.username,
+        firstname: user?.firstName,
+        lastname: user?.lastName,
         messages: [],
-        type: MessageType.UserMessage,
+        type: value.username.includes("group")
+          ? MessageType.GroupMessage
+          : MessageType.UserMessage,
       };
       this.scrollToEnd();
       this.selectConversation(conversation);
@@ -209,6 +215,8 @@ export default defineComponent({
   },
   async mounted() {
     this.user = this.userStore.storedUser;
+    this.fetchAllUsers();
+
     if (this.user?.username != null) {
       this.currentUserId = this.user.username;
       this.fetchAllMessages();
