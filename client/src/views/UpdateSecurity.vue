@@ -1,7 +1,7 @@
 <template>
-  <div class="flex">
+  <div class="flex ml-64">
     <SideBar />
-    <div class="flex-1 p-6 pl-8">
+    <div class="flex-1 p-10">
       <h2 class="text-3xl font-bold mb-7">Security Management</h2>
       <h5 class="font-medium">Change Password</h5>
       <form class="w-full max-w-lg mt-10" @submit.prevent="updatePassword">

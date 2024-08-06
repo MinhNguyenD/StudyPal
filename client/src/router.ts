@@ -11,6 +11,7 @@ import UpdateProfile from "./views/UpdateProfile.vue";
 import UpdateSecurity from "./views/UpdateSecurity.vue";
 import CourseList from "./views/Courses.vue";
 import MainChat from "./components/chats/MainChat.vue";
+import StudyPal from "./views/StudyPal.vue";
 
 const routes = [
   {
@@ -57,6 +58,10 @@ const routes = [
     path: "/courses",
     component: CourseList,
   },
+  {
+    path: "/studypal",
+    component: StudyPal,
+  }
 ];
 
 const router = createRouter({
@@ -65,7 +70,6 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  console.log(to);
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = [
     "/login",

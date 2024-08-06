@@ -1,7 +1,7 @@
 <template>
   <!-- Sidebar -->
-  <div class="w-64 h-96">
-    <nav class="mt-6">
+  <div class="w-64 pt-6 h-screen fixed top-18 left-0 border-r-2 border-zinc-300 overflow-y-hidden h-screen">
+    <nav class="">
       <button
         class="w-full mb-3 hover:bg-primary hover:text-white"
         :class="{ 'bg-primary text-white': activeLink === 'dashboard' }"
@@ -318,7 +318,7 @@
       </ul>
     </nav>
   </div>
-  <div class="mt-5 border-r-2 border-gray-300 h-screen"></div>
+  <!-- <div class=""></div> -->
 </template>
 
 <script>

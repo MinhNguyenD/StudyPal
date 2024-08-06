@@ -3,6 +3,7 @@ import { server } from '@/instance';
 import { days, getTheWeeknd, getWeekStart, hours } from '@/lib/utils';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import SideBar from '../SideBar.vue';
 
 type SlotData = {
     isSelected: true,
@@ -119,28 +120,33 @@ function getHeading() {
 
 </script>
 <template>
-    <div class="w-100 flex flex-col justify-items-center align-middle mt-12">
-        <div class="flex justify-between w-4/5 mx-auto">
-            <h4>
-                <h4 class="text-center inline mr-5">Edit your availability</h4>
-                <input type="checkbox" class="inline" name="editable" id="editable" @change="() => handleEditable()">
-            </h4>
-            <h4>
-                {{ getHeading() }}
-            </h4>
-        </div>
+    <div class="flex ml-64">
+        <SideBar />
+        <div class="w-full align-middle p-10">
+            <h4 class="mx-auto flex justify-center border-b-2 pb-3 font-bold">{{ route.params.id }}</h4>
+            <div class="flex justify-between  mx-auto pt-3">
+                <h4>
+                    <h4 class="text-center inline mr-5">Edit your availability</h4>
+                    <input type="checkbox" class="inline" name="editable" id="editable"
+                        @change="() => handleEditable()">
+                </h4>
+                <h4>
+                    {{ getHeading() }}
+                </h4>
+            </div>
 
-        <div class="parent">
-            <div v-for="slot in slots">
-                <h5>{{ slot[0] }}</h5>
-                <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
-                    @click="() => handleClick(start, data)">
-                    <h6 @click="() => console.log(start, start.getTime())"
-                        :class="[data.isSelected ? 'bg-primary' : 'time-slot']">{{ start.toLocaleString(undefined, {
+            <div class="parent">
+                <div v-for="slot in slots" class="p-2 text-center">
+                    <h5>{{ slot[0] }}</h5>
+                    <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
+                        class="p-2 cursor-pointer" @click="() => handleClick(start, data)"
+                        :class="[data.isSelected ? 'bg-primary' : 'time-slot']">
+                        <h6 @click="() => console.log(start, start.getTime())">{{ start.toLocaleString(undefined, {
                             hour: "2-digit",
                             minute: "2-digit",
                             second: "2-digit"
                         }) }}</h6>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,24 +154,25 @@ function getHeading() {
 </template>
 
 <style>
-.parent
-{
+.parent {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    margin: auto;
-    margin-top: 60px;
+    margin-top: 30px;
     width: 80%;
 }
 
-.time-slot
-{
+.time-slot {
     background-color: whitesmoke;
 }
 
-.time-slot:hover
-{
+.time-slot:hover {
     background-color: gray;
+}
+
+.bg-primary:hover {
+    background-color: darkblue;
+    color: white;
 }
 </style>
