@@ -1,7 +1,7 @@
 <template>
-    <div class="flex">
+    <div class="flex ml-64">
         <SideBar />
-        <div class="flex-1 p-6 pl-8">
+        <div class="flex-1 p-10">
             <div class="px-4 flex items-center justify-between bg-white">
                 <h2 class="text-3xl font-bold mb-4">Course List</h2>
                 <button class="px-4 py-1 bg-primary text-white font-semibold rounded-full hover:bg-blue-700" @click="addCourse">Add Course</button>

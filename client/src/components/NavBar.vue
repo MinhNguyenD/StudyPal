@@ -1,5 +1,5 @@
 <template>
-    <nav class="mx-10 flex items-center justify-between p-4 bg-white">
+    <nav class="px-20 flex items-center justify-between p-4 bg-white border-b-2 border-gray-300">
         <div class="text-2xl font-bold">StudyPal</div>
         <div class="hidden md:flex space-x-7">
             <RouterLink to="/" class="pt-1 font-semibold hover:underline hover:text-primary active:text-primary">Home

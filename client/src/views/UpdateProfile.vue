@@ -1,8 +1,8 @@
 <template>
-  <div class="flex">
+  <div class="flex ml-64">
     <SideBar />
     <!-- Main content -->
-    <div class="flex-1 p-6 pl-8">
+    <div class="flex-1 p-10">
       <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
       <div class="flex items-center">
         <div class="relative">
