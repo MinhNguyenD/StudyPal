@@ -6,7 +6,10 @@
           {{ selectedConversation.id.toUpperCase()[0] }}
         </div>
         <div>
-          <p class="text-gray-800 font-bold">{{ selectedConversation.name }}</p>
+          <p v-if="selectedConversation.type === 'UserMessage'" class="text-gray-800 font-bold">{{
+            selectedConversation.firstname + " " + selectedConversation.lastname }}</p>
+          <p v-if="selectedConversation.type === 'GroupMessage'" class="text-gray-800 font-bold">{{
+            selectedConversation.id }}</p>
           <p class="text-gray-600">{{ selectedConversation.id }}</p>
         </div>
       </div>

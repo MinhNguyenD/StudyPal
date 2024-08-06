@@ -14,7 +14,7 @@
         </div>
         <div class="w-8/12">
           <p :class="{ 'font-bold': conversation.id === selectedConversation?.id }" class="text-gray-800">
-            {{ conversation.name }}
+            {{ conversation.id }}
           </p>
           <p :class="{ 'font-bold': conversation.id === selectedConversation?.id }" class="text-gray-500 text-sm">
             {{ formatMessage(getLastMessage(conversation.id).message) }}
