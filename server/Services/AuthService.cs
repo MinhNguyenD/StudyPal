@@ -95,6 +95,7 @@ public class AuthService
             Succeeded = true,
             AuthUser = new AuthUserDto
             {
+                Id = newUser.Id,
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Username = newUser.UserName,
@@ -161,6 +162,7 @@ public class AuthService
             Succeeded = true,
             AuthUser = new AuthUserDto
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Username = user.UserName,

@@ -18,3 +18,8 @@ export enum MessageType {
     UserMessage = 'UserMessage',
     GroupMessage = 'GroupMessage'
 }
+
+export interface GroupChat {
+    groupId: string;
+    users: string[];
+}
