@@ -10,7 +10,8 @@
             selectedConversation.firstname + " " + selectedConversation.lastname }}</p>
           <p v-if="selectedConversation.type === 'GroupMessage'" class="text-gray-800 font-bold">{{
             selectedConversation.id }}</p>
-          <p class="text-gray-600">{{ selectedConversation.id }}</p>
+          <p v-if="selectedConversation.type === 'UserMessage'" class="text-gray-600">{{ selectedConversation.id }}</p>
+          <p v-if="selectedConversation.type === 'GroupMessage'" class="text-gray-600">Group Chat</p>
         </div>
       </div>
 
