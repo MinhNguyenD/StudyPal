@@ -147,10 +147,10 @@ function getHeading() {
                     <input type="checkbox" class="inline" name="editable" id="editable"
                         @change="() => handleEditable()">
                 </h4> -->
-                <!-- <h4>
+            <!-- <h4>
                     {{ getHeading() }}
                 </h4>
-            </div> --> 
+            </div> -->
             <div class="flex flex-row gap-5">
                 <div class="parent flex-2">
                     <div v-for="slot in slots" class="p-2 text-center">
@@ -162,11 +162,11 @@ function getHeading() {
                                 hour: "2-digit",
                                 minute: "2-digit",
                                 second: "2-digit"
-                                }) }}</h6>
+                            }) }}</h6>
                         </div>
                     </div>
                 </div>
-                    <SlotGroupInfo class="flex-1" :revalidate="revalidate" :slotData="selectedSlot"></SlotGroupInfo>
+                <SlotGroupInfo class="flex-1" :revalidate="revalidate" :slotData="selectedSlot"></SlotGroupInfo>
             </div>
         </div>
     </div>
