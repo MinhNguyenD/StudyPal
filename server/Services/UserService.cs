@@ -28,6 +28,23 @@ namespace server.Services
 
         public async Task<User?> GetAsync(string username) =>
             await _userCollection.Find(x => x.UserName == username).FirstOrDefaultAsync();
+ 
+        public async Task<List<string>> GetRoleAsync(string username)
+        {
+            var currentUser = await _userManager.FindByNameAsync(username);
+            if (currentUser == null)
+            {
+                return null;
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(currentUser);
+            List<string> roles = new List<string>();
+            foreach (var role in userRoles)
+            {
+                roles.Add(role);
+            }
+            return roles;
+        }
 
         public async Task UpdateAsync(string username,UpdateUserDto updateUserDto)
         {
@@ -60,6 +77,12 @@ namespace server.Services
             var roles = updateUserDto.Roles;
             if (!(roles.Count == 0))
             {
+                List<string> currentRoles = await GetRoleAsync(username);
+                foreach (string oldRole in currentRoles)
+                {
+                    var removeRoles = await _userManager.RemoveFromRoleAsync(currentUser, oldRole);
+                }
+
                 foreach (string role in roles)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(currentUser, role);

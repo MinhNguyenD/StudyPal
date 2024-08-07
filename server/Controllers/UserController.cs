@@ -34,6 +34,17 @@ namespace server.Controllers
             return user;
         }
 
+        [HttpGet("role/{username}")]
+        public async Task<List<string>> GetRole(string username)
+        {
+            var role = await _userService.GetRoleAsync(username);
+            if (role == null)
+            {
+                return null;
+            }
+            return role;
+        }
+
         [HttpPut("{username}")]
         public async Task<IActionResult> Update(string username, [FromBody] UpdateUserDto updateUserDto)
         {
