@@ -13,6 +13,15 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div
+        v-if="registerServerError"
+        class="flex justify-between bg-red-300 text-red-800 p-5 mb-4 border-solid border-[1px] border-red-600 text-sm font-semibold"
+      >
+        <p>Server error! Please try again later</p>
+        <button @click="() => (registerServerError = false)" class="text-red-900">
+          &#x2715;
+        </button>
+      </div>
       <form id="registerForm" @submit.prevent="handleSubmit" class="space-y-6">
         <div class="flex items-center justify-between">
           <div>
@@ -241,12 +250,13 @@
 <script>
 import { useUserStore } from "@/store/user";
 import axios from "axios";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 
 export default {
   name: "Register",
   setup() {
     const userStore = useUserStore();
+    const registerServerError = ref(false);
     const form = reactive({
       firstName: "",
       lastName: "",
@@ -265,7 +275,7 @@ export default {
       confirmPassword: "",
       roles: "",
     });
-    return { userStore, form, errors };
+    return { userStore, form, errors, registerServerError };
   },
   methods: {
     async handleSubmit() {
@@ -292,6 +302,9 @@ export default {
             }
             if (e.code === "DuplicateEmail") {
               this.errors.email = e.description;
+            }
+            if (e.code !== "DuplicateUserName" && e.code !== "DuplicateEmail") {
+              this.registerServerError = true;
             }
           }
         }
