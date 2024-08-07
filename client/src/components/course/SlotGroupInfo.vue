@@ -169,7 +169,8 @@ export default {
       <p class="text-xl">Members: {{ slotData.data.users.length }}</p>
       <button :disabled="isInGroup" @click="joinGroup" :class="{ 'opacity-50 cursor-not-allowed': isInGroup }"
         class="bg-primary text-white py-2 px-4 rounded-full p-2">Join study group</button>
-      <button v-if="isInGroup" @click="leaveGroup" class="mx-2 bg-red-500 text-white py-2 px-4 rounded-full p-2">Leave study
+      <button v-if="isInGroup" @click="leaveGroup" class="mx-2 bg-red-500 text-white py-2 px-4 rounded-full p-2">Leave
+        study
         group</button>
     </div>
     <div v-else class="py-10 w-60 space-y-2">
@@ -179,7 +180,8 @@ export default {
       <p class="text-xl">{{ formatTime(slotData.start, new Date(slotData.start.getTime() + 60 * 60 * 1000)) }}</p>
       <br>
       <p class="text-xl font-semibold">There is no group in current time slot right now</p>
-      <button :class="{ 'rounded-full opacity-50 cursor-not-allowed': isInGroup }" @click="createGroup" class="rounded-full bg-green-500 p-2 px-4">Create
+      <button :class="{ 'rounded-full opacity-50 cursor-not-allowed': isInGroup }" @click="createGroup"
+        class="rounded-full bg-green-500 p-2 px-4">Create
         new group</button>
     </div>
   </div>
