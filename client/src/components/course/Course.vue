@@ -93,10 +93,10 @@ async function handleClick(slot: Date, data: SlotData) {
     await revalidate(route.params.id as string);
 }
 
-async function handleEditable() {
-    isEditable.value = !isEditable.value;
-    await revalidate(route.params.id as string);
-}
+// async function handleEditable() {
+//     isEditable.value = !isEditable.value;
+//     await revalidate(route.params.id as string);
+// }
 
 watch(slots, (newSlots) => {
     for (const [_, slotArray] of newSlots.entries()) {
@@ -127,13 +127,13 @@ watch(
         immediate: true
     }
 )
-function getHeading() {
-    if (isEditable.value) {
-        return "Currently viewing your availability"
-    } else {
-        return "Currently viewing all availabilities"
-    }
-}
+// function getHeading() {
+//     if (isEditable.value) {
+//         return "Currently viewing your availability"
+//     } else {
+//         return "Currently viewing all availabilities"
+//     }
+// }
 
 </script>
 <template>
