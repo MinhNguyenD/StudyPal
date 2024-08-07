@@ -80,14 +80,14 @@ async function handleClick(slot: Date, data: SlotData) {
     // if (isEditable.value) {
     //     await createSlot(slot, data);
     // } else {
-        // handle creating chat
-        if (data.isSelected) {
-            console.log(data.users);
-        }
-        selectedSlot.value = {
-            start: slot,
-            data: data
-        };
+    // handle creating chat
+    if (data.isSelected) {
+        console.log(data.users);
+    }
+    selectedSlot.value = {
+        start: slot,
+        data: data
+    };
     // }
 
     await revalidate(route.params.id as string);
@@ -101,7 +101,7 @@ async function handleEditable() {
 watch(slots, (newSlots) => {
     for (const [_, slotArray] of newSlots.entries()) {
         // Find the slot with the matching start date
-        if(selectedSlot.value.data.isSelected){
+        if (selectedSlot.value.data.isSelected) {
             const foundSlot = slotArray.find(slot => slot.start.getTime() === selectedSlot.value.start.getTime());
             if (foundSlot) {
                 selectedSlot.value = foundSlot;
@@ -141,34 +141,32 @@ function getHeading() {
         <SideBar />
         <div class="w-full align-middle p-10">
             <h4 class="mx-auto flex justify-center border-b-2 pb-3 font-bold">{{ route.params.id }}</h4>
-            <div class="flex justify-between  mx-auto pt-3">
-                <h4>
+            <!-- <div class="flex justify-between  mx-auto pt-3">
+                <!-- <h4>
                     <h4 class="text-center inline mr-5">View your availability</h4>
                     <input type="checkbox" class="inline" name="editable" id="editable"
                         @change="() => handleEditable()">
-                </h4>
-                <h4>
+                </h4> -->
+                <!-- <h4>
                     {{ getHeading() }}
                 </h4>
-            </div>
-            <div class="flex flex-wrap">
-                <div class="parent">
-                <div v-for="slot in slots" class="p-2 text-center">
-                    <h5>{{ slot[0] }}</h5>
-                    <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
-                        class="p-2 cursor-pointer" @click="() => {handleClick(start, data)}"
-                        :class="[data.isSelected ? 'bg-primary' : 'time-slot']">
-                        <h6 @click="() => console.log(start, start.getTime())">{{ start.toLocaleString(undefined, {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit"
-                        }) }}</h6>
+            </div> --> 
+            <div class="flex flex-row gap-5">
+                <div class="parent flex-2">
+                    <div v-for="slot in slots" class="p-2 text-center">
+                        <h5>{{ slot[0] }}</h5>
+                        <div v-for="{ start, data } in slot[1]" style="display: flex; flex-direction: column;"
+                            class="p-2 cursor-pointer" @click="() => { handleClick(start, data) }"
+                            :class="[data.isSelected ? 'bg-primary' : 'time-slot']">
+                            <h6 @click="() => console.log(start, start.getTime())">{{ start.toLocaleString(undefined, {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit"
+                                }) }}</h6>
+                        </div>
                     </div>
                 </div>
-                </div>
-                <div class="ml-20">
-                    <SlotGroupInfo :revalidate="revalidate":slotData="selectedSlot"></SlotGroupInfo>
-                </div>
+                    <SlotGroupInfo class="flex-1" :revalidate="revalidate" :slotData="selectedSlot"></SlotGroupInfo>
             </div>
         </div>
     </div>
