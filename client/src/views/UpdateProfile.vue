@@ -2,7 +2,7 @@
   <div class="flex ml-64">
     <SideBar />
     <!-- Main content -->
-    <div v-if="userStore.storedUser" class="flex-1 p-10">
+    <div v-if="currentUser" class="flex-1 p-10">
       <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
       <div class="flex items-center">
         <div class="relative">
@@ -11,8 +11,10 @@
           </div>
         </div>
         <div class="ml-5">
-          <h2 class="text-lg font-bold">{{ userStore.storedUser.username }}</h2>
-          <h2 class="text-lg">{{ userStore.storedUser.email }}</h2>
+          <h2 class="text-lg font-bold">{{ currentUser.username }}</h2>
+          <h2 class="text-lg">{{ currentUser.email }}</h2>
+          <h2 class="text-sm italic" v-if="roles.length < 2">{{ roles[0] }}</h2>
+          <h2 class="text-sm italic" v-if="roles.length == 2">{{ roles[0] }}/{{ roles[1] }}</h2>
         </div>
       </div>
       <form class="w-full max-w-lg mt-10" @submit.prevent="updateProfile">
@@ -105,7 +107,7 @@
         >
           Choose Role:
         </div>
-        <div class="flex flex-wrap mb-5">
+        <div class="flex flex-wrap">
           <div class="flex items-center me-10">
             <input
               class="w-4 h-4 text-blue-600 bg-gray-200 border-gray-300 rounded focus:ring-blue-500"
@@ -129,6 +131,12 @@
             <label class="ms-2 text-base font-medium" for="tutor">Tutor</label>
           </div>
         </div>
+        <p
+          class="text-red-500 text-xs italic"
+          v-if="user.rolesError.length > 0"
+        >
+          {{ user.rolesError }}
+        </p>
 
         <div class="flex flex-wrap mt-10">
           <div class="flex items-center me-5">
@@ -182,6 +190,7 @@ import ProfilePic from "../assets/avatar.png";
 import { useUserStore } from "@/store/user";
 import authHeader from "@/services/authHeader";
 import axios from "axios";
+import { ref } from 'vue';
 
 export default {
   components: {
@@ -189,8 +198,24 @@ export default {
   },
   setup() {
     const userStore = useUserStore();
+    const currentUser = userStore.storedUser;
+    const roles = ref([]);
+
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(`update/user/role/${currentUser.username}`);
+        roles.value = response.data;
+      }
+      catch(error) {
+        console.error("Error fetching roles: ", error);
+      }
+    };
+
+    fetchRoles();
+
     return {
-      userStore,
+      currentUser,
+      roles
     };
   },
   data() {
@@ -206,6 +231,7 @@ export default {
         lastnameError: "",
         universityError: "",
         majorError: "",
+        rolesError: ""
       },
       updateSuccessfully: false,
     };
@@ -215,18 +241,17 @@ export default {
       if (!this.validateForm()) {
         return;
       }
-      const currentUser = this.userStore.storedUser;
       if (this.user.firstName == "") {
-        this.user.firstName = currentUser.firstName;
+        this.user.firstName = this.currentUser.firstName;
         console.log(this.user.firstName);
       }
       if (this.user.lastName == "") {
-        this.user.lastName = currentUser.lastName;
+        this.user.lastName = this.currentUser.lastName;
         console.log(this.user.lastName);
       }
 
       try {
-        const update = await axios.put(`update/user/${currentUser.username}`, {
+        const update = await axios.put(`update/user/${this.currentUser.username}`, {
           firstname: this.user.firstName,
           lastname: this.user.lastName,
           university: this.user.university,
@@ -273,9 +298,28 @@ export default {
           this.user.majorError = "";
         }
       }
+
+      if (!(this.user.checkedRoles == [])) {
+        if (this.user.checkedRoles.length == this.roles.length) {
+          if (this.roles.length == 2) {
+            this.user.rolesError = "You have been assigned to both roles";
+            formValidated = false;
+          }
+          else {
+            if (this.user.checkedRoles[0] == this.roles[0]) {
+              this.user.rolesError = "You have been assigned to this role";
+              formValidated = false;
+            }
+          }
+        }
+        else {
+          this.user.rolesError = "";
+        }
+      }
       return formValidated;
     },
     hideModal() {
+      window.location.reload();
       this.updateSuccessfully = false;
     },
   },
