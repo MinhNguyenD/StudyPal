@@ -100,7 +100,7 @@ export default defineComponent({
         firstname: this.getConversation(user.id)?.firstName,
         lastname: this.getConversation(user.id)?.lastName,
         messages: this.filterMessagesBySelectedUser(user.id),
-        type: user.id.includes("group")
+        type: user.id.includes("group") || user.id.includes("Group")
           ? MessageType.GroupMessage
           : MessageType.UserMessage,
       }));

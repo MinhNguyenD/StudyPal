@@ -179,7 +179,7 @@ watch(
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     margin-top: 30px;
-    width: 80%;
+    width: 75%;
 }
 
 .time-slot {
