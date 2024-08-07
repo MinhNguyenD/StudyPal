@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { server } from '@/instance';
 import { days, getTheWeeknd, getWeekStart, hours } from '@/lib/utils';
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -53,19 +52,19 @@ function getIsSelected(date: Date): SlotData {
     return { isSelected: false }
 }
 
-async function createSlot(date: Date, data: SlotData) {
-    if (!data.isSelected) {
-        await axios.post("api/schedule", {
-            schedule: [{
-                timeFrom: date.getTime(),
-                timeTo: date.getTime() + (1 * hours)
-            }],
-            courseId: route.params.id
-        });
-    } else {
-        await server.delete(`api/schedule/delete/${data.id}`);
-    }
-}
+// async function createSlot(date: Date, data: SlotData) {
+//     if (!data.isSelected) {
+//         await axios.post("api/schedule", {
+//             schedule: [{
+//                 timeFrom: date.getTime(),
+//                 timeTo: date.getTime() + (1 * hours)
+//             }],
+//             courseId: route.params.id
+//         });
+//     } else {
+//         await server.delete(`api/schedule/delete/${data.id}`);
+//     }
+// }
 
 async function revalidate(courseId: string) {
     if (isEditable.value) {
