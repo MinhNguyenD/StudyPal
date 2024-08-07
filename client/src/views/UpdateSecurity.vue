@@ -1,5 +1,5 @@
 <template>
-  <div class="flex ml-64">
+  <div class="flex">
     <SideBar />
     <div class="flex-1 p-10">
       <h2 class="text-3xl font-bold mb-7">Security Management</h2>
