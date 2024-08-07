@@ -78,9 +78,9 @@ async function revalidate(courseId: string) {
 
 async function handleClick(slot: Date, data: SlotData) {
     console.log(data);
-    if (isEditable.value) {
-        await createSlot(slot, data);
-    } else {
+    // if (isEditable.value) {
+    //     await createSlot(slot, data);
+    // } else {
         // handle creating chat
         if (data.isSelected) {
             console.log(data.users);
@@ -89,7 +89,7 @@ async function handleClick(slot: Date, data: SlotData) {
             start: slot,
             data: data
         };
-    }
+    // }
 
     await revalidate(route.params.id as string);
 }
@@ -144,7 +144,7 @@ function getHeading() {
             <h4 class="mx-auto flex justify-center border-b-2 pb-3 font-bold">{{ route.params.id }}</h4>
             <div class="flex justify-between  mx-auto pt-3">
                 <h4>
-                    <h4 class="text-center inline mr-5">Edit your availability</h4>
+                    <h4 class="text-center inline mr-5">View your availability</h4>
                     <input type="checkbox" class="inline" name="editable" id="editable"
                         @change="() => handleEditable()">
                 </h4>
