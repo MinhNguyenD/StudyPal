@@ -1,6 +1,8 @@
 <template>
   <!-- Sidebar -->
-  <div class="w-64 pt-6 h-screen fixed top-18 left-0 border-r-2 border-zinc-300 overflow-y-hidden h-screen">
+  <div v-if="userStore.user != null">
+    <div class="w-64"></div>
+    <div class="w-64 pt-6 h-screen fixed top-18 left-0 border-r-2 border-zinc-300 overflow-y-hidden h-screen">
     <nav class="">
       <button
         class="w-full mb-3 hover:bg-primary hover:text-white"
@@ -317,6 +319,7 @@
         </li>
       </ul>
     </nav>
+  </div>
   </div>
   <!-- <div class=""></div> -->
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SideBar from "@/components/SideBar.vue";
 import {
   Accordion,
   AccordionContent,
@@ -70,53 +71,56 @@ const accordionTutorItems = [
 </script>
 
 <template>
-  <div class="container">
-    <div>
-      <h1 class="text-3xl font-bold text-center">
-        Frequently Asked Questions (FAQ)
-      </h1>
-      <br />
+  <div class="flex">
+    <SideBar />
+    <div class="container">
+      <div>
+        <h1 class="text-3xl font-bold text-center">
+          Frequently Asked Questions (FAQ)
+        </h1>
+        <br />
 
-      <h1 class="text-2xl font-bold">General</h1>
-      <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
-        <AccordionItem v-for="item in accordionGeneralItems" :key="item.value" :value="item.value">
-          <AccordionTrigger>{{ item.title }}</AccordionTrigger>
-          <AccordionContent>
-            {{ item.content }}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      <br />
-      <h1 class="text-2xl font-bold">Courses and Schedules</h1>
-      <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
-        <AccordionItem v-for="item in accordionCourseScheduleItems" :key="item.value" :value="item.value">
-          <AccordionTrigger>{{ item.title }}</AccordionTrigger>
-          <AccordionContent>
-            {{ item.content }}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      <br />
-      <h1 class="text-2xl font-bold">Study Groups</h1>
-      <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
-        <AccordionItem v-for="item in accordionStudyGroupItems" :key="item.value" :value="item.value">
-          <AccordionTrigger>{{ item.title }}</AccordionTrigger>
-          <AccordionContent>
-            {{ item.content }}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+        <h1 class="text-2xl font-bold">General</h1>
+        <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
+          <AccordionItem v-for="item in accordionGeneralItems" :key="item.value" :value="item.value">
+            <AccordionTrigger>{{ item.title }}</AccordionTrigger>
+            <AccordionContent>
+              {{ item.content }}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <br />
+        <h1 class="text-2xl font-bold">Courses and Schedules</h1>
+        <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
+          <AccordionItem v-for="item in accordionCourseScheduleItems" :key="item.value" :value="item.value">
+            <AccordionTrigger>{{ item.title }}</AccordionTrigger>
+            <AccordionContent>
+              {{ item.content }}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <br />
+        <h1 class="text-2xl font-bold">Study Groups</h1>
+        <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
+          <AccordionItem v-for="item in accordionStudyGroupItems" :key="item.value" :value="item.value">
+            <AccordionTrigger>{{ item.title }}</AccordionTrigger>
+            <AccordionContent>
+              {{ item.content }}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
-      <br />
-      <h1 class="text-2xl font-bold">Tutors</h1>
-      <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
-        <AccordionItem v-for="item in accordionTutorItems" :key="item.value" :value="item.value">
-          <AccordionTrigger>{{ item.title }}</AccordionTrigger>
-          <AccordionContent>
-            {{ item.content }}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+        <br />
+        <h1 class="text-2xl font-bold">Tutors</h1>
+        <Accordion type="single" class="w-full" collapsible :default-value="defaultValue">
+          <AccordionItem v-for="item in accordionTutorItems" :key="item.value" :value="item.value">
+            <AccordionTrigger>{{ item.title }}</AccordionTrigger>
+            <AccordionContent>
+              {{ item.content }}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
     </div>
   </div>
 </template>

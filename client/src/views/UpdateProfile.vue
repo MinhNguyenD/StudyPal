@@ -1,5 +1,5 @@
 <template>
-  <div class="flex ml-64">
+  <div class="flex">
     <SideBar />
     <!-- Main content -->
     <div v-if="userStore.storedUser" class="flex-1 p-10">
