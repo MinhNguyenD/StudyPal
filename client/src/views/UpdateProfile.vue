@@ -105,7 +105,7 @@
         <div
           class="uppercase tracking-wide text-gray-700 text-xs font-bold mb-3"
         >
-          Choose Role:
+          Choose Role (Choose both if you want to have both roles):
         </div>
         <div class="flex flex-wrap">
           <div class="flex items-center me-10">
