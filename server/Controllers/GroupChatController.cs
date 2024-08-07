@@ -41,10 +41,22 @@ public class GroupChatController : ControllerBase
         return Ok(groupChats);
     }
 
-    [HttpPost("{groupId}/users")]
-    public async Task<IActionResult> AddUserToGroupChat(string groupId, [FromBody] string username)
+    [HttpPost("{groupId}/users/{username}")]
+    public async Task<IActionResult> AddUserToGroupChat(string groupId, string username)
     {
         await _groupChatService.AddUserToGroupChatAsync(groupId, username);
+        return NoContent();
+    }
+
+    [HttpDelete("{groupId}/users/{username}")]
+    public async Task<IActionResult> RemoveUserFromGroupChat(string groupId, string username)
+    {
+        await _groupChatService.RemoveUserFromGroupChatAsync(groupId, username);
+        var groupChat =  await _groupChatService.GetGroupChatByGroupIdAsync(groupId);
+        if(groupChat.Users.Count == 0){
+            await _groupChatService.DeleteGroupChatAsync(groupId);
+            await _groupChatService.DeleteAllGroupMessages(groupId);
+        }
         return NoContent();
     }
 }

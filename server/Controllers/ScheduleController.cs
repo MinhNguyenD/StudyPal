@@ -43,6 +43,17 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         return Ok(results.ToList());
     }
 
+    [HttpGet("schedules/{id}")]
+    public async Task<IActionResult> GetSchedule(string id) {
+        if (!ModelState.IsValid) {
+            return BadRequest(ModelState);
+        }
+
+        var results = await _schedules.FindAsync(elem => elem.Id.ToString().Equals(id));
+
+        return Ok(results.ToList());
+    }
+
     /// <summary>
     /// get the timeframes for the current week for given user
     /// </summary>
@@ -124,6 +135,19 @@ public class ScheduleController(IMongoClient client) : ControllerBase {
         }
 
         var result = await _schedules.DeleteOneAsync(schedule => schedule.Id == ObjectId.Parse(scheduleId));
+        if (result.DeletedCount == 1) {
+            return Ok();
+        }
+
+        return NotFound();
+    }
+
+    [HttpDelete("delete/{timeFrom}/{timeTo}/users/{userId}")]
+    public async Task<IActionResult> DeleteFromUser(long timeFrom, long timeTo, string userId) {
+        if (!ModelState.IsValid) {
+            return BadRequest(ModelState);
+        }
+        var result = await _schedules.DeleteOneAsync(schedule => schedule.UserId == Guid.Parse(userId) && schedule.TimeFrom == timeFrom && schedule.TimeTo == timeTo);
         if (result.DeletedCount == 1) {
             return Ok();
         }
