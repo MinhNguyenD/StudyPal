@@ -100,7 +100,7 @@ async function handleEditable() {
 }
 
 watch(slots, (newSlots) => {
-    for (const [key, slotArray] of newSlots.entries()) {
+    for (const [_, slotArray] of newSlots.entries()) {
         // Find the slot with the matching start date
         if(selectedSlot.value.data.isSelected){
             const foundSlot = slotArray.find(slot => slot.start.getTime() === selectedSlot.value.start.getTime());
