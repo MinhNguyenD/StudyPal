@@ -47,7 +47,6 @@ export const useUserStore = defineStore("user", {
           password: password,
         });
         this.user = response.data;
-        console.log(this.user);
         this.token = response.data.token;
         localStorage.setItem("token", this.token!);
         localStorage.setItem("user", JSON.stringify(this.user));
@@ -73,6 +72,7 @@ export const useUserStore = defineStore("user", {
         if (user && token) {
           state.user = user ? (JSON.parse(user) as User) : null;
           state.token = token;
+          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         }
       }
       return state.user;
@@ -84,6 +84,7 @@ export const useUserStore = defineStore("user", {
         if (user && token) {
           state.user = user ? (JSON.parse(user) as User) : null;
           state.token = token;
+          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         }
       }
       return state.token;
