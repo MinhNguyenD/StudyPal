@@ -120,7 +120,7 @@ function getHeading() {
 
 </script>
 <template>
-    <div class="flex ml-64">
+    <div class="flex">
         <SideBar />
         <div class="w-full align-middle p-10">
             <h4 class="mx-auto flex justify-center border-b-2 pb-3 font-bold">{{ route.params.id }}</h4>

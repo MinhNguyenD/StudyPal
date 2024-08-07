@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen w-full bg-white">
+  <div class="flex">
+    <SideBar/>
+    <div class="min-h-screen w-full bg-white">
     <main class="py-16 w-full">
       <section class="flex flex-col md:flex-row text-center md:text-left mb-16 p-12 items-center text-black px-16">
         <div class="md:w-1/2">
@@ -60,6 +62,8 @@
       </section>
     </main>
   </div>
+  </div>
+  
 </template>
 
 <script>
