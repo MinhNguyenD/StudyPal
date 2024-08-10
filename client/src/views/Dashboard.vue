@@ -42,7 +42,7 @@
           <div v-if="Object.keys(courseIds).length != 0" v-for="course in courseIds"
             :style="{ backgroundColor: getCourseColor(course) }"
             class=" min-w-56 h-40 flex flex-col rounded-2xl hover:bg-gray-200">
-            <RouterLink :to="'/course/' + course" class="block px-4 p-3 py-2 text-medium">
+            <RouterLink :to="'/course/' + course" class="block px-4 p-3 py-2 text-medium h-full">
               <h5 class="">{{ course + ":" }}</h5>
               <h6 class="text-lg">{{ courses.find(val => val.courseCode === course)?.courseName }}</h6>
             </RouterLink>
