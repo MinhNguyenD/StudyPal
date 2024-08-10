@@ -95,8 +95,8 @@ export default {
       courseCode: "",
       courseName: "",
       courseCodeError: "",
-      searchQuery: "", // For the search query
-      sortOption: "name-asc", // Default sort option
+      searchQuery: "",
+      sortOption: "name-asc",
     };
   },
   created() {

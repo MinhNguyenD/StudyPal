@@ -9,7 +9,7 @@ import axios from 'axios';
 type SlotData = {
     isSelected: true,
     id: string,
-    users: string[] // all user id's available at this slot
+    users: string[]
 } | {
     isSelected: false
 }
