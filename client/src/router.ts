@@ -11,7 +11,7 @@ import UpdateProfile from "./views/UpdateProfile.vue";
 import UpdateSecurity from "./views/UpdateSecurity.vue";
 import CourseList from "./views/Courses.vue";
 import MainChat from "./components/chats/MainChat.vue";
-import StudyPal from "./views/StudyPal.vue";
+import StudyPal from "./components/studypal/StudyPal.vue";
 
 const routes = [
   {

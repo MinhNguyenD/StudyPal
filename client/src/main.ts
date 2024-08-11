@@ -6,7 +6,8 @@ import axios from "axios";
 import { createPinia } from "pinia";
 import { useUserStore } from "./store/user";
 
-axios.defaults.baseURL = "https://csci4177grp-20.onrender.com/";
+axios.defaults.baseURL = "https://localhost:7298/";
+// axios.defaults.baseURL = "https://csci4177grp-20.onrender.com/";
 const pinia = createPinia();
 const app = createApp(App);
 app.use(router).use(pinia);
